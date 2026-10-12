@@ -1,0 +1,1894 @@
+/* =========================================================
+   WOOSH — Clean UI
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  color: #111;
+  background: #fff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  background: #fff;
+  color: #111;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+img {
+  max-width: 100%;
+}
+
+.app {
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 32px;
+
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid #ededed;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  user-select: none;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 27px;
+  font-weight: 750;
+  letter-spacing: -1.3px;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-buttons button {
+  padding: 9px 15px;
+  border-radius: 9px;
+  color: #222;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.auth-buttons button:hover {
+  background: #f3f3f3;
+}
+
+.auth-buttons button:active {
+  transform: scale(0.97);
+}
+
+.auth-buttons .create-account {
+  background: #111;
+  color: #fff;
+}
+
+.auth-buttons .create-account:hover {
+  background: #292929;
+}
+
+.logged-in-name {
+  margin-right: 3px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.layout {
+  display: flex;
+  min-height: calc(100vh - 72px);
+}
+
+.sidebar {
+  position: sticky;
+  top: 72px;
+
+  width: 230px;
+  height: calc(100vh - 72px);
+
+  padding: 24px 16px;
+
+  border-right: 1px solid #ededed;
+
+  flex-shrink: 0;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nav-button {
+  width: 100%;
+  padding: 12px 15px;
+
+  border-radius: 10px;
+
+  text-align: left;
+
+  color: #666;
+  font-size: 15px;
+  font-weight: 500;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.nav-button:hover {
+  background: #f5f5f5;
+  color: #111;
+}
+
+.nav-button:active {
+  transform: scale(0.98);
+}
+
+.nav-button.active {
+  background: #eeeeee;
+  color: #111;
+  font-weight: 650;
+}
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.main-content {
+  width: 100%;
+  max-width: 900px;
+
+  padding: 38px 42px 80px;
+
+  margin: 0 auto;
+}
+
+.main-content h1 {
+  margin-bottom: 25px;
+
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.6px;
+}
+
+.page-placeholder {
+  padding: 55px 25px;
+
+  text-align: center;
+
+  border: 1px solid #ededed;
+  border-radius: 16px;
+
+  background: #fff;
+}
+
+.page-placeholder h2 {
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.page-placeholder p {
+  color: #777;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+.auth-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      #fafafa 0%,
+      #fff 55%
+    );
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+
+  padding: 38px;
+
+  text-align: center;
+
+  border: 1px solid #e9e9e9;
+  border-radius: 18px;
+
+  background: #fff;
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.05);
+}
+
+.auth-icon {
+  width: 50px;
+  height: 50px;
+
+  margin-bottom: 18px;
+
+  object-fit: contain;
+}
+
+.auth-card h1 {
+  margin-bottom: 25px;
+
+  font-size: 27px;
+  letter-spacing: -0.6px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.auth-card input {
+  width: 100%;
+
+  padding: 13px 14px;
+
+  border: 1px solid #dedede;
+  border-radius: 9px;
+
+  outline: none;
+
+  color: #111;
+  background: #fff;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.auth-card input::placeholder {
+  color: #999;
+}
+
+.auth-card input:focus {
+  border-color: #111;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+.auth-submit {
+  margin-top: 4px;
+
+  padding: 13px;
+
+  border-radius: 9px;
+
+  background: #111;
+  color: #fff;
+
+  font-weight: 650;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.auth-submit:hover {
+  background: #292929;
+}
+
+.auth-submit:active {
+  transform: scale(0.98);
+}
+
+.auth-switch,
+.back-button {
+  width: 100%;
+
+  margin-top: 15px;
+
+  padding: 9px;
+
+  color: #666;
+  font-size: 14px;
+}
+
+.auth-switch:hover,
+.back-button:hover {
+  color: #111;
+  text-decoration: underline;
+}
+
+/* =========================================================
+   WOOSH FEED
+   ========================================================= */
+
+.wooshes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 22px;
+}
+
+.wooshes-header h1 {
+  margin-bottom: 0;
+}
+
+.post-button {
+  padding: 9px 18px;
+
+  border-radius: 9px;
+
+  background: #111;
+  color: #fff;
+
+  font-weight: 650;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.post-button:hover {
+  background: #292929;
+}
+
+.post-button:active {
+  transform: scale(0.97);
+}
+
+.woosh-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.woosh-card {
+  padding: 19px 20px;
+
+  border: 1px solid #e8e8e8;
+  border-radius: 15px;
+
+  background: #fff;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.woosh-card:hover {
+  border-color: #dcdcdc;
+
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.035);
+}
+
+/* =========================================================
+   WOOSH USER
+   ========================================================= */
+
+.woosh-user {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-bottom: 12px;
+
+  color: #111;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.woosh-user:hover {
+  text-decoration: underline;
+}
+
+/*
+   Tiny feed avatar.
+
+   This is intentionally much smaller than the
+   profile-page avatar.
+*/
+
+.woosh-user .avatar {
+  width: 24px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  background: #111;
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  object-fit: cover;
+}
+
+.woosh-user .avatar img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+/* =========================================================
+   GENERAL AVATARS
+   ========================================================= */
+
+.avatar {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  background: #111;
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  object-fit: cover;
+}
+
+.avatar-small {
+  width: 24px;
+  height: 24px;
+  font-size: 11px;
+}
+
+.avatar-large {
+  width: 104px;
+  height: 104px;
+  font-size: 34px;
+}
+
+/* =========================================================
+   WOOSH CONTENT
+   ========================================================= */
+
+.woosh-text {
+  margin-left: 31px;
+
+  font-size: 16px;
+  line-height: 1.55;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.woosh-image {
+  display: block;
+
+  width: auto;
+  max-width: calc(100% - 31px);
+  max-height: 600px;
+
+  margin: 16px 0 0 31px;
+
+  border-radius: 12px;
+
+  object-fit: contain;
+}
+
+/* =========================================================
+   WOOSH ACTIONS
+   ========================================================= */
+
+.woosh-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  margin: 17px 0 0 31px;
+  padding-top: 13px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+.woosh-actions button {
+  color: #777;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.woosh-actions button:hover {
+  color: #111;
+}
+
+.woosh-actions button:active {
+  transform: scale(0.96);
+}
+
+.liked {
+  color: #111 !important;
+  font-weight: 700 !important;
+}
+
+/* =========================================================
+   REWOOSH
+   ========================================================= */
+
+.rewoosh-label {
+  margin-bottom: 9px;
+
+  color: #888;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   COMMENTS
+   ========================================================= */
+
+.comments-section {
+  margin: 16px 0 0 31px;
+  padding-top: 14px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+.comment {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 7px 0;
+
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.comment .avatar {
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+}
+
+.comment strong {
+  flex-shrink: 0;
+  font-weight: 650;
+}
+
+.comment span {
+  color: #444;
+  overflow-wrap: anywhere;
+}
+
+.comment-input {
+  display: flex;
+  gap: 8px;
+
+  margin-top: 12px;
+}
+
+.comment-input input {
+  min-width: 0;
+  flex: 1;
+
+  padding: 10px 12px;
+
+  border: 1px solid #ddd;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #fff;
+}
+
+.comment-input input:focus {
+  border-color: #111;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.comment-input button {
+  padding: 10px 15px;
+
+  border-radius: 9px;
+
+  background: #111;
+  color: #fff;
+
+  font-weight: 600;
+}
+
+.comment-input button:hover {
+  background: #292929;
+}
+
+/* =========================================================
+   PROFILE PAGE
+   ========================================================= */
+
+.profile-page {
+  width: 100%;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+
+  padding: 25px;
+
+  border: 1px solid #e8e8e8;
+  border-radius: 17px;
+
+  background: #fff;
+
+  margin-bottom: 18px;
+}
+
+.profile-picture-wrapper {
+  flex-shrink: 0;
+}
+
+.profile-picture {
+  width: 104px;
+  height: 104px;
+
+  display: block;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.profile-picture-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #111;
+  color: #fff;
+
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.profile-info {
+  min-width: 0;
+}
+
+.profile-display-name {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.profile-username {
+  margin-top: 3px;
+
+  color: #777;
+
+  font-size: 14px;
+}
+
+.profile-bio {
+  margin-top: 10px;
+
+  color: #444;
+
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.profile-edit-button {
+  margin-top: 13px;
+
+  padding: 8px 14px;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  color: #333;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-edit-button:hover {
+  background: #f5f5f5;
+}
+
+/* =========================================================
+   PROFILE EDIT
+   ========================================================= */
+
+.profile-edit-card {
+  margin-bottom: 18px;
+  padding: 22px;
+
+  border: 1px solid #e8e8e8;
+  border-radius: 15px;
+
+  background: #fafafa;
+}
+
+.profile-edit-card h2 {
+  margin-bottom: 18px;
+  font-size: 19px;
+}
+
+.profile-edit-card input,
+.profile-edit-card textarea {
+  width: 100%;
+
+  padding: 11px 12px;
+
+  border: 1px solid #ddd;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #fff;
+
+  margin-bottom: 11px;
+}
+
+.profile-edit-card textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.profile-edit-card input:focus,
+.profile-edit-card textarea:focus {
+  border-color: #111;
+}
+
+.profile-picture-editor {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 15px;
+}
+
+.profile-picture-editor input[type="file"] {
+  margin: 0;
+}
+
+.profile-picture-preview {
+  width: 72px;
+  height: 72px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.profile-edit-actions button {
+  padding: 9px 15px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-edit-actions button:first-child {
+  background: #111;
+  color: #fff;
+}
+
+.profile-edit-actions button:first-child:hover {
+  background: #292929;
+}
+
+.profile-edit-actions button:last-child {
+  border: 1px solid #ddd;
+}
+
+.profile-edit-actions button:last-child:hover {
+  background: #f2f2f2;
+}
+
+/* =========================================================
+   PROFILE WOOSHES
+   ========================================================= */
+
+.profile-wooshes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-wooshes > h2 {
+  margin: 5px 0 4px;
+
+  font-size: 19px;
+  letter-spacing: -0.2px;
+}
+
+/* =========================================================
+   COMPOSER
+   ========================================================= */
+
+.composer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.38);
+
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.composer {
+  width: 100%;
+  max-width: 610px;
+
+  padding: 24px;
+
+  border-radius: 17px;
+
+  background: #fff;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.2);
+
+  animation: composerIn 0.16s ease-out;
+}
+
+@keyframes composerIn {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.composer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 17px;
+}
+
+.composer-header h2 {
+  font-size: 20px;
+  letter-spacing: -0.3px;
+}
+
+.composer-close {
+  padding: 6px 9px;
+
+  border-radius: 7px;
+
+  color: #777;
+  font-size: 14px;
+}
+
+.composer-close:hover {
+  background: #f2f2f2;
+  color: #111;
+}
+
+.composer textarea {
+  width: 100%;
+  min-height: 155px;
+
+  padding: 14px;
+
+  resize: vertical;
+
+  border: 1px solid #ddd;
+  border-radius: 11px;
+
+  outline: none;
+
+  background: #fff;
+
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.composer textarea:focus {
+  border-color: #111;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.composer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 14px;
+}
+
+.file-button {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 8px 13px;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.file-button:hover {
+  background: #f5f5f5;
+}
+
+.image-preview {
+  margin-top: 13px;
+}
+
+.image-preview img {
+  display: block;
+
+  max-width: 100%;
+  max-height: 280px;
+
+  border-radius: 11px;
+
+  object-fit: contain;
+}
+
+.image-preview button {
+  margin-top: 7px;
+
+  color: #777;
+  font-size: 12px;
+}
+
+.image-preview button:hover {
+  color: #111;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .topbar {
+    height: 64px;
+    padding: 0 17px;
+  }
+
+  .brand-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .brand-name {
+    font-size: 24px;
+  }
+
+  .layout {
+    display: block;
+    min-height: calc(100vh - 64px);
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 64px;
+    z-index: 50;
+
+    width: 100%;
+    height: auto;
+
+    padding: 8px 12px;
+
+    border-right: 0;
+    border-bottom: 1px solid #ededed;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  nav {
+    flex-direction: row;
+    gap: 5px;
+  }
+
+  .nav-button {
+    flex: 1;
+
+    padding: 9px 8px;
+
+    text-align: center;
+    font-size: 13px;
+  }
+
+  .main-content {
+    max-width: none;
+    padding: 25px 15px 60px;
+  }
+
+  .main-content h1 {
+    font-size: 25px;
+  }
+
+  .profile-header {
+    padding: 19px;
+    gap: 16px;
+  }
+
+  .profile-picture {
+    width: 78px;
+    height: 78px;
+  }
+
+  .profile-display-name {
+    font-size: 21px;
+  }
+
+  .woosh-card {
+    padding: 16px;
+  }
+
+  .woosh-text,
+  .woosh-image,
+  .woosh-actions,
+  .comments-section {
+    margin-left: 0;
+  }
+
+  .woosh-image {
+    max-width: 100%;
+  }
+
+  .woosh-actions {
+    gap: 13px;
+  }
+
+  .auth-buttons {
+    gap: 3px;
+  }
+
+  .logged-in-name {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 0 12px;
+  }
+
+  .auth-buttons button {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .auth-card {
+    padding: 30px 22px;
+  }
+
+  .profile-header {
+    align-items: flex-start;
+  }
+
+  .profile-picture {
+    width: 68px;
+    height: 68px;
+  }
+
+  .profile-display-name {
+    font-size: 19px;
+  }
+
+  .profile-bio {
+    font-size: 14px;
+  }
+
+  .composer {
+    padding: 19px;
+  }
+
+  .composer textarea {
+    min-height: 130px;
+  }
+}
+
+/* ============================================================
+   COMMUNITY + DIRECT MESSAGES
+   ============================================================ */
+
+.community-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.community-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.community-header h1 {
+  margin: 0;
+}
+
+/* Community tabs */
+
+.community-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #252a35;
+  padding-bottom: 10px;
+}
+
+.community-tab {
+  border: none;
+  background: transparent;
+  color: #8f98a8;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.community-tab:hover {
+  background: #181c24;
+  color: #ffffff;
+}
+
+.community-tab.active {
+  background: #1d2635;
+  color: #4ea1ff;
+}
+
+/* Servers button for later */
+
+.community-tab.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.community-tab.disabled:hover {
+  background: transparent;
+  color: #8f98a8;
+}
+
+/* DM page */
+
+.dm-page {
+  width: 100%;
+}
+
+.dm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.dm-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+/* Add DM button */
+
+.add-dm-button {
+  border: none;
+  background: #4ea1ff;
+  color: white;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.add-dm-button:hover {
+  background: #398fe9;
+}
+
+.add-dm-button:active {
+  transform: scale(0.97);
+}
+
+/* Conversation list */
+
+.dm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dm-conversation {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: #151922;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.dm-conversation:hover {
+  background: #1b202b;
+  border-color: #252c38;
+}
+
+.dm-conversation.active {
+  background: #1d2635;
+  border-color: #2b3b51;
+}
+
+/* DM avatars */
+
+.dm-avatar {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.dm-avatar.profile-picture-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #252c38;
+  color: #cbd3df;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Conversation information */
+
+.dm-conversation-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.dm-conversation-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.dm-conversation-username {
+  font-size: 13px;
+  color: #7f8999;
+  margin-bottom: 4px;
+}
+
+.dm-last-message {
+  font-size: 13px;
+  color: #929baa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dm-empty {
+  padding: 45px 20px;
+  text-align: center;
+  border: 1px dashed #2a303b;
+  border-radius: 12px;
+  color: #858e9e;
+}
+
+.dm-empty h3 {
+  margin: 0 0 8px;
+  color: #cbd2dd;
+}
+
+.dm-empty p {
+  margin: 0;
+}
+
+/* ============================================================
+   ADD DM / USER SEARCH
+   ============================================================ */
+
+.dm-search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.dm-search-modal {
+  width: min(500px, 100%);
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #11151d;
+  border: 1px solid #292f3a;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  padding: 20px;
+}
+
+.dm-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.dm-search-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.dm-search-close {
+  border: none;
+  background: transparent;
+  color: #8c95a4;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.dm-search-close:hover {
+  background: #1d222c;
+  color: white;
+}
+
+.dm-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #191e27;
+  border: 1px solid #2b313d;
+  color: white;
+  padding: 12px 13px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 15px;
+}
+
+.dm-search-input:focus {
+  border-color: #4ea1ff;
+}
+
+.dm-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 14px;
+}
+
+.dm-search-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  background: transparent;
+  color: white;
+  padding: 10px;
+  border-radius: 9px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dm-search-result:hover {
+  background: #1b2029;
+}
+
+.dm-search-result-info {
+  min-width: 0;
+}
+
+.dm-search-result-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.dm-search-result-username {
+  color: #7f8998;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.dm-search-message {
+  color: #818a99;
+  font-size: 14px;
+  padding: 15px 5px;
+  text-align: center;
+}
+
+/* ============================================================
+   DM CHAT
+   ============================================================ */
+
+.dm-chat {
+  width: 100%;
+  height: calc(100vh - 120px);
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  background: #11151d;
+  border: 1px solid #252b36;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dm-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid #252b36;
+  background: #141821;
+}
+
+.dm-back-button {
+  border: none;
+  background: transparent;
+  color: #8d97a7;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 7px 9px;
+  border-radius: 7px;
+}
+
+.dm-back-button:hover {
+  background: #1d222c;
+  color: white;
+}
+
+.dm-chat-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dm-chat-user-info {
+  min-width: 0;
+}
+
+.dm-chat-display-name {
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.dm-chat-username {
+  color: #7e8796;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* Messages */
+
+.dm-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dm-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 6px 4px;
+}
+
+.dm-message-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dm-message-content {
+  min-width: 0;
+  max-width: 75%;
+}
+
+.dm-message-author {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.dm-message-text {
+  color: #d4d9e1;
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.dm-message-time {
+  color: #646d7c;
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.dm-message.mine {
+  flex-direction: row-reverse;
+}
+
+.dm-message.mine .dm-message-content {
+  text-align: right;
+}
+
+.dm-no-messages {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #707989;
+  text-align: center;
+}
+
+/* Message input */
+
+.dm-input-area {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #252b36;
+  background: #141821;
+}
+
+.dm-message-input {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  border: 1px solid #2b313d;
+  background: #1a1f28;
+  color: white;
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.dm-message-input:focus {
+  border-color: #4ea1ff;
+}
+
+.dm-send-button {
+  border: none;
+  background: #4ea1ff;
+  color: white;
+  padding: 0 17px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dm-send-button:hover {
+  background: #398fe9;
+}
+
+.dm-send-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .community-page {
+    width: 100%;
+  }
+
+  .dm-chat {
+    height: calc(100vh - 100px);
+    min-height: 400px;
+    border-radius: 8px;
+  }
+
+  .dm-message-content {
+    max-width: 82%;
+  }
+
+  .dm-header {
+    gap: 10px;
+  }
+
+  .add-dm-button {
+    padding: 8px 11px;
+  }
+}
+
+/* ============================================================
+   MESSAGES PAGE SPACING — 1.5x
+   ============================================================ */
+
+.dm-page {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dm-title-row {
+  margin-bottom: 36px;
+}
+
+/* New direct message */
+.new-dm-box {
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.new-dm-box input {
+  padding: 12px 16px;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.new-dm-box .post-button {
+  min-height: 48px;
+  padding: 12px 18px;
+}
+
+/* Conversation lists */
+.dm-conversations,
+.group-conversations {
+  gap: 15px;
+}
+
+.dm-conversation,
+.group-conversation {
+  min-height: 69px;
+  padding: 15px 16px;
+  gap: 15px;
+  box-sizing: border-box;
+}
+
+/* Group chats section */
+.group-section {
+  margin-top: 36px;
+  padding-top: 30px;
+}
+
+.group-section-header {
+  margin-bottom: 15px;
+  gap: 15px;
+}
+
+/* Chat header */
+.dm-chat-header {
+  min-height: 66px;
+  padding: 15px 0;
+  gap: 15px;
+  box-sizing: border-box;
+}
+
+/* Message spacing */
+.dm-messages {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.dm-message-row {
+  margin-bottom: 15px;
+}
+
+/* Message input */
+.dm-input-area {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+}
+
+.dm-input-area input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.dm-input-area .post-button {
+  min-height: 48px;
+  padding: 12px 18px;
+}
+
+/* Mobile spacing */
+@media (max-width: 600px) {
+  .dm-title-row {
+    margin-bottom: 27px;
+    gap: 12px;
+  }
+
+  .new-dm-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .new-dm-box button {
+    width: 100%;
+  }
+
+  .dm-conversation,
+  .group-conversation {
+    min-height: 64px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .group-section {
+    margin-top: 27px;
+    padding-top: 22px;
+  }
+
+  .dm-chat-header {
+    min-height: 60px;
+    gap: 12px;
+  }
+
+  .dm-messages {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+
+  .dm-message-row {
+    margin-bottom: 12px;
+  }
+
+  .dm-input-area {
+    gap: 10px;
+    padding: 12px 0;
+  }
+}
