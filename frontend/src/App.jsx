@@ -6,7 +6,9 @@ const API_URL = "https://woosh-api.duckdns.org";
 
 function App() {
   const [activePage, setActivePage] = useState("Wooshes");
-  const [authPage, setAuthPage] = useState(null);
+  const [authPage, setAuthPage] = useState(() =>
+    localStorage.getItem("wooshLoggedInUser") ? null : "splash"
+  );
   const [showComposer, setShowComposer] = useState(false);
 
   const [loggedInUser, setLoggedInUser] = useState(
@@ -130,6 +132,12 @@ function App() {
   useEffect(() => {
     loadWooshes();
   }, []);
+
+  useEffect(() => {
+    if (authPage !== "splash") return undefined;
+    const timeout = window.setTimeout(() => setAuthPage("login"), 1400);
+    return () => window.clearTimeout(timeout);
+  }, [authPage]);
 
   // ============================================================
   // LOAD DMS
@@ -2299,141 +2307,75 @@ color: "#111111",
   };
 
   // ============================================================
-  // LOGIN SCREEN
+  // ONBOARDING + AUTH SCREENS
   // ============================================================
 
-  if (authPage === "login") {
+  const continueAsGuest = () => setAuthPage(null);
+
+  if (authPage === "splash") {
     return (
-      <div className="auth-page">
-        <div className="auth-card">
-          <img
-            src={wooshIcon}
-            alt="Woosh"
-            className="auth-icon"
-          />
-
-          <h1>Log in</h1>
-
-          <form onSubmit={handleLogin}>
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(event) =>
-                setUsername(event.target.value)
-              }
-            />
-
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
-            />
-
-            <button
-              type="submit"
-              className="auth-submit"
-            >
-              Log in
-            </button>
-          </form>
-
-          <button
-            className="auth-switch"
-            onClick={() => {
-              setAuthPage("create");
-              setUsername("");
-              setPassword("");
-            }}
-          >
-            Create an account
-          </button>
-
-          <button
-            className="back-button"
-            onClick={() => setAuthPage(null)}
-          >
-            Back
-          </button>
+      <div className="onboarding-page splash-page">
+        <button className="guest-link" onClick={continueAsGuest}>Continue as guest</button>
+        <div className="splash-brand" aria-label="Woosh">
+          <img src={wooshIcon} alt="" />
+          <span>Woosh</span>
         </div>
       </div>
     );
   }
 
-  // ============================================================
-  // CREATE ACCOUNT SCREEN
-  // ============================================================
+  if (authPage === "login") {
+    return (
+      <div className="onboarding-page">
+        <button className="guest-link" onClick={continueAsGuest}>Continue as guest</button>
+        <div className="onboarding-brand">
+          <img src={wooshIcon} alt="Woosh" />
+          <span>Woosh</span>
+        </div>
+        <section className="auth-card onboarding-card">
+          <h1>Welcome to Woosh</h1>
+          <form onSubmit={handleLogin}>
+            <input type="text" placeholder="Username" autoComplete="username" value={username}
+              onChange={(event) => setUsername(event.target.value)} />
+            <input type="password" placeholder="Password" autoComplete="current-password" value={password}
+              onChange={(event) => setPassword(event.target.value)} />
+            <button type="submit" className="auth-submit">Log in</button>
+          </form>
+          <p className="auth-prompt">New to Woosh?{" "}
+            <button className="auth-inline-link" onClick={() => {
+              setAuthPage("create"); setUsername(""); setPassword(""); setDisplayName("");
+            }}>Sign up!</button>
+          </p>
+        </section>
+      </div>
+    );
+  }
 
   if (authPage === "create") {
     return (
-      <div className="auth-page">
-        <div className="auth-card">
-          <img
-            src={wooshIcon}
-            alt="Woosh"
-            className="auth-icon"
-          />
-
-          <h1>Create account</h1>
-
-          <form onSubmit={handleCreateAccount}>
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(event) =>
-                setUsername(event.target.value)
-              }
-            />
-
-            <input
-              type="text"
-              placeholder="Display name (optional)"
-              value={displayName}
-              onChange={(event) =>
-                setDisplayName(event.target.value)
-              }
-            />
-
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
-            />
-
-            <button
-              type="submit"
-              className="auth-submit"
-            >
-              Create account
-            </button>
-          </form>
-
-          <button
-            className="auth-switch"
-            onClick={() => {
-              setAuthPage("login");
-              setUsername("");
-              setPassword("");
-              setDisplayName("");
-            }}
-          >
-            Already have an account?
-          </button>
-
-          <button
-            className="back-button"
-            onClick={() => setAuthPage(null)}
-          >
-            Back
-          </button>
+      <div className="onboarding-page">
+        <button className="guest-link" onClick={continueAsGuest}>Continue as guest</button>
+        <div className="onboarding-brand">
+          <img src={wooshIcon} alt="Woosh" />
+          <span>Woosh</span>
         </div>
+        <section className="auth-card onboarding-card">
+          <h1>Create your account</h1>
+          <form onSubmit={handleCreateAccount}>
+            <input type="text" placeholder="Username" autoComplete="username" value={username}
+              onChange={(event) => setUsername(event.target.value)} />
+            <input type="text" placeholder="Display name (optional)" autoComplete="nickname" value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)} />
+            <input type="password" placeholder="Password" autoComplete="new-password" value={password}
+              onChange={(event) => setPassword(event.target.value)} />
+            <button type="submit" className="auth-submit">Sign up</button>
+          </form>
+          <p className="auth-prompt">Already have an account?{" "}
+            <button className="auth-inline-link" onClick={() => {
+              setAuthPage("login"); setUsername(""); setPassword(""); setDisplayName("");
+            }}>Log in</button>
+          </p>
+        </section>
       </div>
     );
   }

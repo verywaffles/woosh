@@ -1907,3 +1907,159 @@ nav {
     padding: 12px 0;
   }
 }
+
+
+/* ============================================================
+   BLACK-AND-WHITE ONBOARDING
+   ============================================================ */
+
+.onboarding-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 96px 24px 40px;
+  background: #fff;
+  color: #111;
+}
+
+.guest-link {
+  position: fixed;
+  top: 24px;
+  left: 28px;
+  z-index: 20;
+  padding: 10px 0;
+  color: #111;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.guest-link:hover,
+.auth-inline-link:hover {
+  color: #555;
+}
+
+.splash-page {
+  padding: 24px;
+  animation: splashFadeIn 0.35s ease-out both;
+}
+
+.splash-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: clamp(36px, 5vw, 54px);
+  font-weight: 800;
+  letter-spacing: -1.8px;
+  animation: splashSettle 1.25s ease-in-out both;
+}
+
+.splash-brand img {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+}
+
+.onboarding-brand {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.onboarding-brand img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.onboarding-card {
+  width: min(100%, 410px);
+  max-width: 410px;
+  padding: 8px 8px 20px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+}
+
+.onboarding-card h1 {
+  margin-bottom: 28px;
+  font-size: 29px;
+  letter-spacing: -0.8px;
+}
+
+.onboarding-card form {
+  gap: 12px;
+}
+
+.onboarding-card input {
+  min-height: 48px;
+  border-radius: 8px;
+}
+
+.onboarding-card .auth-submit {
+  min-height: 48px;
+  margin-top: 5px;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+}
+
+.onboarding-card .auth-submit:hover {
+  background: #333;
+}
+
+.auth-prompt {
+  margin-top: 22px;
+  color: #555;
+  font-size: 14px;
+}
+
+.auth-inline-link {
+  color: #111;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@keyframes splashFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes splashSettle {
+  0% { opacity: 0; transform: scale(0.96); }
+  25% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 600px) {
+  .guest-link {
+    top: 18px;
+    left: 18px;
+  }
+
+  .onboarding-brand {
+    top: 70px;
+    left: 22px;
+  }
+
+  .onboarding-page:not(.splash-page) {
+    padding: 140px 22px 36px;
+  }
+
+  .onboarding-card {
+    padding: 8px 0 20px;
+  }
+}
