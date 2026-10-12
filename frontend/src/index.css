@@ -2065,3 +2065,34 @@ nav {
     padding: 8px 0 20px;
   }
 }
+
+
+/* WOOSHIES — short-video feed */
+.wooshies-page { width: 100%; max-width: 760px; margin: 0 auto; }
+.wooshies-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.wooshies-header h1 { margin-bottom: 7px; }
+.wooshies-header p, .wooshie-help { color: #777; font-size: 14px; line-height: 1.5; }
+.wooshie-composer { display: flex; flex-direction: column; gap: 13px; padding: 20px; margin-bottom: 20px; border: 1px solid #e6e6e6; border-radius: 14px; background: #fafafa; }
+.wooshie-composer-heading { display: flex; justify-content: space-between; align-items: center; }
+.wooshie-composer-heading h2 { font-size: 18px; }
+.wooshie-composer-heading button { color: #666; padding: 5px 8px; }
+.wooshie-composer label { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 650; }
+.wooshie-composer input, .wooshie-composer textarea { width: 100%; padding: 11px 12px; border: 1px solid #ddd; border-radius: 8px; background: white; color: #111; }
+.wooshie-composer textarea { min-height: 75px; resize: vertical; }
+.wooshie-help { font-size: 12px; }
+.wooshie-error { color: #b42318; font-size: 14px; margin: 10px 0; }
+.wooshie-feed { display: flex; flex-direction: column; gap: 20px; }
+.wooshie-card { overflow: hidden; border: 1px solid #e7e7e7; border-radius: 16px; background: #fff; }
+.wooshie-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 13px 15px; }
+.wooshie-author { display: flex; align-items: center; gap: 10px; text-align: left; min-width: 0; }
+.wooshie-author > span:last-child { display: flex; flex-direction: column; gap: 2px; }
+.wooshie-author strong { font-size: 14px; }
+.wooshie-author small, .wooshie-meta time { font-size: 12px; color: #777; }
+.wooshie-avatar { width: 34px; height: 34px; border-radius: 50%; background: #111; color: white; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; }
+.wooshie-video-frame { background: #080808; display: flex; justify-content: center; }
+.wooshie-video-frame video { display: block; width: 100%; max-height: min(74vh, 760px); aspect-ratio: 9 / 16; object-fit: contain; background: #080808; }
+.wooshie-caption { padding: 14px 16px 0; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.wooshie-actions { display: flex; padding: 12px 16px 15px; }
+.wooshie-actions button { color: #666; font-size: 13px; font-weight: 600; }
+.wooshie-actions button:hover { color: #111; }
+@media (max-width: 600px) { .wooshies-header { align-items: flex-start; flex-direction: column; } .wooshie-video-frame video { max-height: 70vh; } }
