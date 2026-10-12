@@ -461,6 +461,7 @@ function getWooshById(wooshId) {
         w.text,
         w.image,
         w.created_at,
+        w.rewooshed_from_id,
         u.username,
         u.display_name,
         u.profile_picture
@@ -473,6 +474,17 @@ function getWooshById(wooshId) {
   if (!woosh) {
     return null;
   }
+
+  const originalAuthor = woosh.rewooshed_from_id
+    ? db
+        .prepare(`
+          SELECT u.username, u.display_name, u.profile_picture
+          FROM wooshes w
+          JOIN users u ON u.id = w.user_id
+          WHERE w.id = ?
+        `)
+        .get(woosh.rewooshed_from_id)
+    : null;
 
   const likes = db
     .prepare(`
@@ -529,6 +541,10 @@ function getWooshById(wooshId) {
     text: woosh.text,
     image: woosh.image,
     createdAt: woosh.created_at,
+    rewooshedFromId: woosh.rewooshed_from_id || null,
+    rewooshedFromUsername: originalAuthor?.username || null,
+    rewooshedFromDisplayName: originalAuthor?.display_name || null,
+    rewooshedFromProfilePicture: originalAuthor?.profile_picture || null,
     likes,
     comments,
     rewooshes,
@@ -783,31 +799,38 @@ app.post(
   authenticateToken,
   (req, res) => {
     try {
-      const originalId = Number(req.params.id);
+      const requestedId = Number(req.params.id);
 
-      if (!Number.isInteger(originalId)) {
+      if (!Number.isInteger(requestedId)) {
         return res.status(400).json({
           error: "Invalid Woosh ID.",
         });
       }
 
-      const original = db
+      const requestedWoosh = db
         .prepare(`
-          SELECT
-            id,
-            text,
-            image,
-            user_id
+          SELECT id, rewooshed_from_id
           FROM wooshes
           WHERE id = ?
         `)
-        .get(originalId);
+        .get(requestedId);
 
-      if (!original) {
+      if (!requestedWoosh) {
         return res.status(404).json({
           error: "Woosh not found.",
         });
       }
+
+      const originalId =
+        requestedWoosh.rewooshed_from_id || requestedWoosh.id;
+
+      const original = db
+        .prepare(`
+          SELECT id, text, image, user_id
+          FROM wooshes
+          WHERE id = ?
+        `)
+        .get(originalId);
 
       const alreadyRewooshed = db
         .prepare(`
@@ -838,13 +861,14 @@ app.post(
       const result = db
         .prepare(`
           INSERT INTO wooshes
-          (user_id, text, image)
-          VALUES (?, ?, ?)
+          (user_id, text, image, rewooshed_from_id)
+          VALUES (?, ?, ?, ?)
         `)
         .run(
           req.user.userId,
           original.text,
-          original.image
+          original.image,
+          original.id
         );
 
       const newWoosh = getWooshById(
