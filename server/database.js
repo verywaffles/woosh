@@ -74,4 +74,11 @@ db.exec(`
   );
 `);
 
+const wooshColumns = db.prepare("PRAGMA table_info(wooshes)").all();
+if (!wooshColumns.some((column) => column.name === "rewooshed_from_id")) {
+  db.exec(
+    "ALTER TABLE wooshes ADD COLUMN rewooshed_from_id INTEGER REFERENCES wooshes(id)"
+  );
+}
+
 module.exports = db;

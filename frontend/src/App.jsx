@@ -1036,12 +1036,15 @@ const leaveGroup = async () => {
       (woosh.likes || []).includes(loggedInUser);
 
     const profile = {
-      username: woosh.username,
+      username: woosh.rewooshedFromUsername || woosh.username,
       displayName:
+        woosh.rewooshedFromDisplayName ||
         woosh.displayName ||
         woosh.display_name ||
+        woosh.rewooshedFromUsername ||
         woosh.username,
       profilePicture:
+        woosh.rewooshedFromProfilePicture ||
         woosh.profilePicture ||
         woosh.profile_picture ||
         null,
@@ -1049,9 +1052,15 @@ const leaveGroup = async () => {
 
     return (
       <article className="woosh-card" key={woosh.id}>
-        {woosh.rewooshedFrom && (
+        {woosh.rewooshedFromId && (
           <div className="rewoosh-label">
-            Rewooshed from @{woosh.rewooshedFrom}
+            Rewooshed by{" "}
+            <button
+              className="rewoosh-attribution"
+              onClick={() => openProfile(woosh.username)}
+            >
+              @{woosh.username}
+            </button>
           </div>
         )}
 
