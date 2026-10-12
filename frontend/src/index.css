@@ -1925,10 +1925,12 @@ nav {
   color: #111;
 }
 
+
 .guest-link {
   position: fixed;
   top: 24px;
-  left: 28px;
+  right: 28px;
+  left: auto;
   z-index: 20;
   padding: 10px 0;
   color: #111;
