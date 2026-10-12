@@ -23,6 +23,14 @@ function App() {
   const [wooshImage, setWooshImage] = useState(null);
 
   const [wooshes, setWooshes] = useState([]);
+
+  const [wooshies, setWooshies] = useState([]);
+  const [loadingWooshies, setLoadingWooshies] = useState(false);
+  const [showWooshieComposer, setShowWooshieComposer] = useState(false);
+  const [wooshieVideoUrl, setWooshieVideoUrl] = useState("");
+  const [wooshieCaption, setWooshieCaption] = useState("");
+  const [savingWooshie, setSavingWooshie] = useState(false);
+  const [wooshieError, setWooshieError] = useState("");
   const [loadingWooshes, setLoadingWooshes] = useState(true);
 
   const [commentInputs, setCommentInputs] = useState({});
@@ -132,6 +140,24 @@ function App() {
   useEffect(() => {
     loadWooshes();
   }, []);
+
+  const loadWooshies = async () => {
+    try {
+      setLoadingWooshies(true);
+      const data = await apiFetch("/api/wooshies");
+      setWooshies(data.wooshies || []);
+      setWooshieError("");
+    } catch (error) {
+      console.error("Could not load Wooshies:", error);
+      setWooshieError(error.message || "Could not load Wooshies.");
+    } finally {
+      setLoadingWooshies(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activePage === "Wooshies") loadWooshies();
+  }, [activePage]);
 
   useEffect(() => {
     if (authPage !== "splash") return undefined;
@@ -2214,6 +2240,119 @@ color: "#111111",
       return renderProfilePage();
     }
 
+    if (activePage === "Wooshies") {
+      const submitWooshie = async (event) => {
+        event.preventDefault();
+        if (!loggedInUser || !token) { setAuthPage("login"); return; }
+        const videoUrl = wooshieVideoUrl.trim();
+        if (!videoUrl) { setWooshieError("Paste a direct video URL first."); return; }
+        try {
+          setSavingWooshie(true);
+          setWooshieError("");
+          await apiFetch("/api/wooshies", {
+            method: "POST",
+            body: JSON.stringify({ videoUrl, caption: wooshieCaption.trim() }),
+          });
+          setWooshieVideoUrl("");
+          setWooshieCaption("");
+          setShowWooshieComposer(false);
+          await loadWooshies();
+        } catch (error) {
+          setWooshieError(error.message || "Could not post Wooshie.");
+        } finally {
+          setSavingWooshie(false);
+        }
+      };
+
+      const toggleWooshieLike = async (wooshie) => {
+        if (!loggedInUser || !token) { setAuthPage("login"); return; }
+        try {
+          const data = await apiFetch(`/api/wooshies/${wooshie.id}/like`, { method: "POST" });
+          setWooshies((current) => current.map((item) => item.id === wooshie.id
+            ? { ...item, likedByMe: data.liked, likeCount: data.likeCount }
+            : item));
+        } catch (error) {
+          setWooshieError(error.message || "Could not update like.");
+        }
+      };
+
+      return (
+        <section className="wooshies-page">
+          <div className="wooshies-header">
+            <div>
+              <h1>Wooshies</h1>
+              <p>Short videos from the WOOSH community.</p>
+            </div>
+            <button className="post-button" onClick={() => {
+              if (!loggedInUser) { setAuthPage("login"); return; }
+              setShowWooshieComposer(true);
+              setWooshieError("");
+            }}>Create Wooshie</button>
+          </div>
+
+          {showWooshieComposer && (
+            <form className="wooshie-composer" onSubmit={submitWooshie}>
+              <div className="wooshie-composer-heading">
+                <h2>New Wooshie</h2>
+                <button type="button" onClick={() => setShowWooshieComposer(false)}>Cancel</button>
+              </div>
+              <label>
+                Video URL
+                <input type="url" value={wooshieVideoUrl}
+                  onChange={(event) => setWooshieVideoUrl(event.target.value)}
+                  placeholder="https://example.com/video.mp4" required />
+              </label>
+              <label>
+                Caption
+                <textarea value={wooshieCaption}
+                  onChange={(event) => setWooshieCaption(event.target.value)}
+                  placeholder="Add a caption..." maxLength={500} />
+              </label>
+              <p className="wooshie-help">Use a direct link to an MP4 or WebM video. Uploading video files will be added later.</p>
+              {wooshieError && <p className="wooshie-error" role="alert">{wooshieError}</p>}
+              <button className="post-button" type="submit" disabled={savingWooshie}>
+                {savingWooshie ? "Posting..." : "Post Wooshie"}
+              </button>
+            </form>
+          )}
+
+          {wooshieError && !showWooshieComposer && <p className="wooshie-error" role="alert">{wooshieError}</p>}
+
+          <div className="wooshie-feed">
+            {loadingWooshies ? (
+              <div className="page-placeholder"><h2>Loading Wooshies...</h2></div>
+            ) : wooshies.length === 0 ? (
+              <div className="page-placeholder">
+                <h2>No Wooshies yet</h2>
+                <p>Be the first to share a short video.</p>
+              </div>
+            ) : wooshies.map((wooshie) => (
+              <article className="wooshie-card" key={wooshie.id}>
+                <div className="wooshie-meta">
+                  <button className="wooshie-author" onClick={() => openProfile(wooshie.username)}>
+                    <span className="wooshie-avatar">{(wooshie.displayName || wooshie.username || "?").slice(0, 1).toUpperCase()}</span>
+                    <span><strong>{wooshie.displayName || wooshie.username}</strong><small>@{wooshie.username}</small></span>
+                  </button>
+                  <time>{wooshie.createdAt ? new Date(wooshie.createdAt.replace(" ", "T") + "Z").toLocaleDateString() : ""}</time>
+                </div>
+                <div className="wooshie-video-frame">
+                  <video controls playsInline preload="metadata" src={wooshie.videoUrl}>
+                    Your browser does not support HTML video.
+                  </video>
+                </div>
+                {wooshie.caption && <p className="wooshie-caption">{wooshie.caption}</p>}
+                <div className="wooshie-actions">
+                  <button className={wooshie.likedByMe ? "liked" : ""} onClick={() => toggleWooshieLike(wooshie)}>
+                    {wooshie.likedByMe ? "Liked" : "Like"} · {wooshie.likeCount || 0}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     if (activePage === "Community") {
       return renderDmsPage();
     }
@@ -2443,6 +2582,7 @@ color: "#111111",
           <nav>
             {[
               "Wooshes",
+              "Wooshies",
               "Community",
               "Account",
             ].map((page) => (
