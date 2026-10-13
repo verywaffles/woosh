@@ -949,6 +949,24 @@ const leaveGroup = async () => {
     }
   };
 
+  const deleteWoosh = async (woosh) => {
+    if (!loggedInUser || !token) {
+      setAuthPage("login");
+      return;
+    }
+
+    if (!window.confirm("Delete this Woosh? This cannot be undone.")) return;
+
+    try {
+      await apiFetch(`/api/wooshes/${woosh.id}`, { method: "DELETE" });
+      setWooshes((current) => current.filter((item) => item.id !== woosh.id));
+      if (currentProfile) await loadProfile(currentProfile.username);
+    } catch (error) {
+      console.error("Delete Woosh error:", error);
+      alert(error.message || "Could not delete Woosh.");
+    }
+  };
+
   // ============================================================
   // LIKE
   // ============================================================
@@ -1148,6 +1166,13 @@ const leaveGroup = async () => {
             {woosh.rewooshes?.length > 0 &&
               woosh.rewooshes.length}
           </button>
+
+          {loggedInUser &&
+            woosh.username?.toLowerCase() === loggedInUser.toLowerCase() && (
+              <button className="delete-post-button" onClick={() => deleteWoosh(woosh)}>
+                Delete
+              </button>
+            )}
         </div>
 
         {openComments[woosh.id] && (
@@ -2225,6 +2250,12 @@ color: "#111111",
                     className="woosh-image"
                   />
                 )}
+
+                {isOwnProfile && (
+                  <button className="delete-post-button" onClick={() => deleteWoosh(woosh)}>
+                    Delete Woosh
+                  </button>
+                )}
               </article>
             ))
           )}
@@ -2258,6 +2289,16 @@ color: "#111111",
         } catch (error) { setWooshieError(error.message || "Could not post Wooshie."); }
         finally { setSavingWooshie(false); }
       };
+      const deleteWooshie = async (wooshie) => {
+        if (!loggedInUser || !token) { setAuthPage("login"); return; }
+        if (!window.confirm("Delete this Wooshie? This cannot be undone.")) return;
+        try {
+          await apiFetch(`/api/wooshies/${wooshie.id}`, { method: "DELETE" });
+          setWooshies((current) => current.filter((item) => item.id !== wooshie.id));
+        } catch (error) {
+          setWooshieError(error.message || "Could not delete Wooshie.");
+        }
+      };
       const toggleWooshieLike = async (wooshie) => {
         if (!loggedInUser || !token) { setAuthPage("login"); return; }
         try {
@@ -2284,7 +2325,33 @@ color: "#111111",
           </div>
           {showWooshieComposer && <form className="wooshie-composer" onSubmit={submitWooshie}>
             <div className="wooshie-composer-heading"><h2>Edit your Wooshie</h2><button type="button" onClick={() => { setShowWooshieComposer(false); setWooshieVideoFile(null); }}>Cancel</button></div>
-            <label>Video file<input type="file" accept="video/mp4,video/webm,video/quicktime,video/ogg" onChange={(event) => setWooshieVideoFile(event.target.files?.[0] || null)} required /></label>
+            <label>Video file<input type="file" accept="video/mp4,video/webm,video/quicktime,video/ogg" onChange={(event) => {
+              const file = event.target.files?.[0] || null;
+              setWooshieVideoFile(null);
+              if (!file) return;
+              const url = URL.createObjectURL(file);
+              const video = document.createElement("video");
+              video.preload = "metadata";
+              video.onloadedmetadata = () => {
+                URL.revokeObjectURL(url);
+                if (!Number.isFinite(video.duration) || video.duration <= 0) {
+                  setWooshieError("Could not read this video's duration.");
+                  event.target.value = "";
+                } else if (video.duration > 5) {
+                  setWooshieError("Wooshies must be 5 seconds or shorter.");
+                  event.target.value = "";
+                } else {
+                  setWooshieError("");
+                  setWooshieVideoFile(file);
+                }
+              };
+              video.onerror = () => {
+                URL.revokeObjectURL(url);
+                setWooshieError("Could not read this video's duration.");
+                event.target.value = "";
+              };
+              video.src = url;
+            }} required /></label>
             {wooshieVideoFile && <p className="wooshie-help">Selected: {wooshieVideoFile.name} · {(wooshieVideoFile.size / (1024 * 1024)).toFixed(1)} MB</p>}
             <label>Caption<textarea value={wooshieCaption} onChange={(event) => setWooshieCaption(event.target.value)} placeholder="Write a caption..." maxLength={500} /></label>
             <p className="wooshie-help">Choose a video from your device. MP4, WebM, MOV, and OGG videos up to 100 MB are supported.</p>
@@ -2297,7 +2364,7 @@ color: "#111111",
               <div className="wooshie-meta"><button className="wooshie-author" onClick={() => openProfile(wooshie.username)}><span className="wooshie-avatar">{(wooshie.displayName || wooshie.username || "?").slice(0, 1).toUpperCase()}</span><span><strong>{wooshie.displayName || wooshie.username}</strong><small>@{wooshie.username}</small></span></button><time>{wooshie.createdAt ? new Date(wooshie.createdAt.replace(" ", "T") + "Z").toLocaleDateString() : ""}</time></div>
               <div className="wooshie-video-frame"><video controls playsInline preload="metadata" src={`${API_URL}${wooshie.videoUrl}`}>Your browser does not support HTML video.</video></div>
               {wooshie.caption && <p className="wooshie-caption">{wooshie.caption}</p>}
-              <div className="wooshie-actions"><button className={wooshie.likedByMe ? "liked" : ""} onClick={() => toggleWooshieLike(wooshie)}>{wooshie.likedByMe ? "Liked" : "Like"} · {wooshie.likeCount || 0}</button><button onClick={() => setWooshieCommentsOpen((current) => ({ ...current, [wooshie.id]: !current[wooshie.id] }))}>Comments · {wooshie.commentCount || (wooshie.comments || []).length || 0}</button></div>
+              <div className="wooshie-actions"><button className={wooshie.likedByMe ? "liked" : ""} onClick={() => toggleWooshieLike(wooshie)}>{wooshie.likedByMe ? "Liked" : "Like"} · {wooshie.likeCount || 0}</button><button onClick={() => setWooshieCommentsOpen((current) => ({ ...current, [wooshie.id]: !wooshieCommentsOpen[wooshie.id] }))}>Comments · {wooshie.commentCount || (wooshie.comments || []).length || 0}</button>{loggedInUser && wooshie.username?.toLowerCase() === loggedInUser.toLowerCase() && <button className="delete-post-button" onClick={() => deleteWooshie(wooshie)}>Delete</button>}</div>
               {wooshieCommentsOpen[wooshie.id] && <div className="wooshie-comments">
                 {(wooshie.comments || []).map((comment) => <div className="wooshie-comment" key={comment.id}><strong>@{comment.username}</strong><span>{comment.text}</span></div>)}
                 {!(wooshie.comments || []).length && <p className="wooshie-help">No comments yet. Start the conversation.</p>}
