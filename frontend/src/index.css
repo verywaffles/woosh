@@ -2098,3 +2098,6 @@ nav {
 @media (max-width: 600px) { .wooshies-header { align-items: flex-start; flex-direction: column; } .wooshie-video-frame video { max-height: 70vh; } }
 
 .wooshie-comments{border-top:1px solid #eee;padding:12px 16px 16px}.wooshie-comment{display:flex;gap:8px;padding:7px 0;font-size:14px;overflow-wrap:anywhere}.wooshie-comment strong{flex-shrink:0}.wooshie-comment-form{display:flex;gap:8px;margin-top:12px}.wooshie-comment-form input{min-width:0;flex:1;border:1px solid #ddd;border-radius:8px;padding:10px 12px}.wooshie-comment-form .post-button{white-space:nowrap}
+
+.delete-post-button { color: #b42318; font-weight: 600; }
+.delete-post-button:hover { color: #7a271a; text-decoration: underline; }
