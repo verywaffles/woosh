@@ -2337,9 +2337,6 @@ color: "#111111",
                 if (!Number.isFinite(video.duration) || video.duration <= 0) {
                   setWooshieError("Could not read this video's duration.");
                   event.target.value = "";
-                } else if (video.duration > 5) {
-                  setWooshieError("Wooshies must be 5 seconds or shorter.");
-                  event.target.value = "";
                 } else {
                   setWooshieError("");
                   setWooshieVideoFile(file);
