@@ -2324,7 +2324,7 @@ color: "#111111",
             <button className="post-button" onClick={() => { if (!loggedInUser) { setAuthPage("login"); return; } setShowWooshieComposer(true); setWooshieError(""); }}>Create Wooshie</button>
           </div>
           {showWooshieComposer && <form className="wooshie-composer" onSubmit={submitWooshie}>
-            <div className="wooshie-composer-heading"><h2>Edit your Wooshie</h2><button type="button" onClick={() => { setShowWooshieComposer(false); setWooshieVideoFile(null); }}>Cancel</button></div>
+            <div className="wooshie-composer-heading"><h2>Create a Wooshie</h2><button type="button" onClick={() => { setShowWooshieComposer(false); setWooshieVideoFile(null); }}>Cancel</button></div>
             <label>Video file<input type="file" accept="video/mp4,video/webm,video/quicktime,video/ogg" onChange={(event) => {
               const file = event.target.files?.[0] || null;
               setWooshieVideoFile(null);
@@ -2354,7 +2354,7 @@ color: "#111111",
             }} required /></label>
             {wooshieVideoFile && <p className="wooshie-help">Selected: {wooshieVideoFile.name} · {(wooshieVideoFile.size / (1024 * 1024)).toFixed(1)} MB</p>}
             <label>Caption<textarea value={wooshieCaption} onChange={(event) => setWooshieCaption(event.target.value)} placeholder="Write a caption..." maxLength={500} /></label>
-            <p className="wooshie-help">Choose a video from your device. MP4, WebM, MOV, and OGG videos up to 100 MB are supported.</p>
+            <p className="wooshie-help">MP4, WebM, iPhone MOV, and OGG up to 100 MB. Longer videos are automatically trimmed to their first 5 seconds.</p>
             {wooshieError && <p className="wooshie-error" role="alert">{wooshieError}</p>}
             <button className="post-button" type="submit" disabled={savingWooshie}>{savingWooshie ? "Uploading..." : "Upload and publish"}</button>
           </form>}
