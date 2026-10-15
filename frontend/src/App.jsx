@@ -24,7 +24,8 @@ function App() {
 
   const [wooshes, setWooshes] = useState([]);
 
-  const [wooshies, setWooshies] = useState([]);\n  const [viewedWooshies, setViewedWooshies] = useState(() => new Set());
+  const [wooshies, setWooshies] = useState([]);
+  const [viewedWooshies, setViewedWooshies] = useState(() => new Set());
   const [loadingWooshies, setLoadingWooshies] = useState(false);
   const [showWooshieComposer, setShowWooshieComposer] = useState(false);
   const [wooshieVideoFile, setWooshieVideoFile] = useState(null);
