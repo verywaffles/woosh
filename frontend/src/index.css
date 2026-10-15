@@ -2101,3 +2101,97 @@ nav {
 
 .delete-post-button { color: #b42318; font-weight: 600; }
 .delete-post-button:hover { color: #7a271a; text-decoration: underline; }
+
+
+/* Wooshie footer — readable caption and clean engagement row */
+.wooshie-caption {
+  padding: 18px 20px 4px;
+  color: #202020;
+  font-size: 15px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.wooshie-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  padding: 13px 20px 17px;
+  margin: 8px 0 0;
+  border-top: 0;
+  color: #777;
+}
+
+.wooshie-actions button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  color: #666;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wooshie-actions button:hover {
+  color: #111;
+}
+
+.wooshie-view-count {
+  margin-left: auto;
+  color: #858585;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.wooshie-comments {
+  padding: 14px 20px 18px;
+  background: #fafafa;
+}
+
+.wooshie-comment {
+  align-items: flex-start;
+  gap: 9px;
+  line-height: 1.5;
+}
+
+.wooshie-comment strong {
+  color: #222;
+}
+
+.wooshie-comment span {
+  min-width: 0;
+  color: #444;
+  overflow-wrap: anywhere;
+}
+
+.wooshie-comment-form input {
+  min-height: 40px;
+  background: #fff;
+}
+
+@media (max-width: 600px) {
+  .wooshie-caption {
+    padding: 15px 15px 2px;
+    font-size: 14px;
+  }
+
+  .wooshie-actions {
+    gap: 8px 15px;
+    padding: 10px 15px 14px;
+  }
+
+  .wooshie-view-count {
+    margin-left: 0;
+  }
+
+  .wooshie-comments {
+    padding: 12px 15px 15px;
+  }
+
+  .wooshie-comment-form {
+    align-items: stretch;
+  }
+}
