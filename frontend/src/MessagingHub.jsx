@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import "./messaging-hub.css";
 
 const API_URL = "https://woosh-api.duckdns.org";
 
@@ -8,6 +9,7 @@ export default function MessagingHub() {
   const [server, setServer] = useState(null);
   const [channels, setChannels] = useState([]);
   const [members, setMembers] = useState([]);
+  const [myRole, setMyRole] = useState("member");
   const [channel, setChannel] = useState(null);
   const [messages, setMessages] = useState([]);
   const [blocked, setBlocked] = useState([]);
@@ -59,6 +61,7 @@ export default function MessagingHub() {
       setServer(data.server);
       setChannels(data.channels || []);
       setMembers(data.members || []);
+      setMyRole(data.myRole || "member");
       setChannel(null);
       setMessages([]);
     } catch (e) { setError(e.message); }
@@ -176,7 +179,7 @@ export default function MessagingHub() {
             <div className="messaging-channel-list">
               {channels.map((item) => <button key={item.id} className={channel?.id === item.id ? "messaging-channel active" : "messaging-channel"} onClick={() => openChannel(item)}># {item.name}</button>)}
             </div>
-            {server.ownerId === Number(localStorage.getItem("wooshUserId")) && <form className="messaging-form" onSubmit={createChannel}><input value={channelName} onChange={(e) => setChannelName(e.target.value)} placeholder="New channel name" maxLength={40} required /><button className="post-button" disabled={busy}>Add channel</button></form>}
+            {(myRole === "owner" || myRole === "admin") && <form className="messaging-form" onSubmit={createChannel}><input value={channelName} onChange={(e) => setChannelName(e.target.value)} placeholder="New channel name" maxLength={40} required /><button className="post-button" disabled={busy}>Add channel</button></form>}
             <div className="messaging-chat">
               {channel ? <><h4># {channel.name}</h4><div className="messaging-messages">{messages.map((message) => <article key={message.id}><strong>@{message.username}</strong><p>{message.text}</p><small>{message.createdAt}</small></article>)}</div><form className="messaging-send" onSubmit={send}><input value={messageText} onChange={(e) => setMessageText(e.target.value)} maxLength={5000} placeholder={`Message #${channel.name}`} required /><button className="post-button" disabled={busy}>Send</button></form></> : <p>Select a channel to read and send messages.</p>}
             </div>
