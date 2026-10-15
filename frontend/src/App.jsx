@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./index.css";
 import wooshIcon from "./assets/woosh.png";
+import Blabbers from "./Blabbers.jsx";
 
 const API_URL = "https://woosh-api.duckdns.org";
 
@@ -2282,6 +2283,10 @@ color: "#111111",
   };
 
   const renderPage = () => {
+    if (activePage === "Blabbers") {
+      return <Blabbers loggedInUser={loggedInUser} onLogin={() => setAuthPage("login")} />;
+    }
+
     if (activePage === "Profile") {
       return renderProfilePage();
     }
@@ -2615,6 +2620,7 @@ color: "#111111",
             {[
               "Wooshes",
               "Wooshies",
+              "Blabbers",
               "Community",
               "Account",
             ].map((page) => (
