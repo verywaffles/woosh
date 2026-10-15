@@ -150,7 +150,6 @@ export default function Blabbers({ loggedInUser, onLogin }) {
         if (audio) { audio.srcObject = null; remoteAudioRef.current.delete(peerId); }
       }
     }
-    const previous = memberIdsRef.current;
     memberIdsRef.current = nextIds;
     for (const member of nextMembers) {
       if (member.id === userId || member.id < userId || peersRef.current.has(member.id)) continue;
@@ -159,11 +158,6 @@ export default function Blabbers({ loggedInUser, onLogin }) {
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
         await sendSignal(room.id, member.id, "offer", pc.localDescription.toJSON());
-      }
-    }
-    for (const member of nextMembers) {
-      if (member.id !== userId && !previous.has(member.id) && member.id > userId && peersRef.current.has(member.id)) {
-        await sendSignal(room.id, member.id, "renegotiate", {}).catch(() => {});
       }
     }
   }, [api, ensurePeer, sendSignal, userId]);
