@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./index.css";
 import wooshIcon from "./assets/woosh.png";
 import Blabbers from "./Blabbers.jsx";
+import MessagingHub from "./MessagingHub.jsx";
 
 const API_URL = "https://woosh-api.duckdns.org";
 
@@ -1808,6 +1809,8 @@ color: "#111111",
           Create Group
         </button>
       </div>
+
+      <MessagingHub />
 
       {/* ======================================================
           DIRECT MESSAGES

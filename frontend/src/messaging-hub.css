@@ -1,0 +1,25 @@
+/* Messaging Hub: servers, channels, and account controls */
+.messaging-hub { margin: 24px 0; }
+.messaging-hub-grid { display: grid; grid-template-columns: minmax(220px, 0.8fr) minmax(320px, 1.4fr); gap: 16px; margin-top: 14px; }
+.messaging-hub-panel, .messaging-blocks { min-width: 0; border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px; background: #fff; }
+.messaging-form { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.messaging-form input, .messaging-send input { flex: 1; min-width: 130px; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px; }
+.messaging-server-list, .messaging-channel-list { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.messaging-server, .messaging-channel { text-align: left; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+.messaging-server span { color: #6b7280; font-size: 12px; }
+.messaging-server.active, .messaging-channel.active { background: #f3f4f6; border-color: #111827; }
+.messaging-server-heading { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+.messaging-server-heading button, .messaging-blocked-user button { border: 1px solid #d1d5db; border-radius: 8px; padding: 7px 10px; }
+.messaging-invite { margin: 8px 0; color: #6b7280; font-size: 13px; overflow-wrap: anywhere; }
+.messaging-chat { margin-top: 12px; border-top: 1px solid #eee; padding-top: 12px; }
+.messaging-messages { display: flex; flex-direction: column; gap: 10px; max-height: 280px; overflow: auto; padding: 12px 0; }
+.messaging-messages article { background: #f7f7f8; border-radius: 9px; padding: 10px; overflow-wrap: anywhere; }
+.messaging-messages small { color: #777; font-size: 11px; }
+.messaging-send { display: flex; gap: 8px; }
+.messaging-members { margin-top: 12px; }
+.messaging-members p { padding: 5px 0; }
+.messaging-blocks { margin-top: 16px; }
+.messaging-blocked-user { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+.messaging-security-note { margin-top: 12px; color: #6b7280; font-size: 12px; }
+.messaging-error { color: #b91c1c; padding: 8px 0; }
+@media (max-width: 760px) { .messaging-hub-grid { grid-template-columns: 1fr; } .messaging-send { flex-wrap: wrap; } }
