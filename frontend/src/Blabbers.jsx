@@ -183,7 +183,6 @@ export default function Blabbers({ loggedInUser, onLogin }) {
       await loadRooms();
     } catch (e) {
       setError(e.name === "NotAllowedError" ? "Microphone access was denied. Allow microphone access and try again." : e.message || "Could not join this Blabber.");
-      if (room.isMember) await api(`/${room.id}/leave`, { method: "DELETE" }).catch(() => {});
     } finally { setBusy(false); }
   };
 
@@ -269,7 +268,6 @@ export default function Blabbers({ loggedInUser, onLogin }) {
   };
 
   if (activeRoom) {
-    const currentRoom = rooms.find((room) => room.id === activeRoom.id) || activeRoom;
     return <section className="blabbers-page">
       <div className="blabbers-room-top">
         <button className="blabber-secondary" onClick={leaveRoom}>← Leave room</button>
