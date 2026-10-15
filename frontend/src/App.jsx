@@ -2363,7 +2363,7 @@ color: "#111111",
             }} required /></label>
             {wooshieVideoFile && <p className="wooshie-help">Selected: {wooshieVideoFile.name} · {(wooshieVideoFile.size / (1024 * 1024)).toFixed(1)} MB</p>}
             <label>Caption<textarea value={wooshieCaption} onChange={(event) => setWooshieCaption(event.target.value)} placeholder="Write a caption..." maxLength={500} /></label>
-            <p className="wooshie-help">MP4, WebM, iPhone MOV, and OGG up to 100 MB. Longer videos are automatically trimmed to their first 5 seconds.</p>
+            <p className="wooshie-help">MP4, WebM, iPhone MOV, and OGG up to 100 MB. Longer videos are automatically trimmed to their first 15 seconds.</p>
             {wooshieError && <p className="wooshie-error" role="alert">{wooshieError}</p>}
             <button className="post-button" type="submit" disabled={savingWooshie}>{savingWooshie ? "Uploading..." : "Upload and publish"}</button>
           </form>}
