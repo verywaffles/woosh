@@ -2175,7 +2175,7 @@ color: "#111111",
               </p>
             )}
 
-            <div className="profile-follow-stats">
+            <div className="profile-follow-stats" style={{ display: "flex", gap: "48px" }}>
               <span><strong>{currentProfile.followingCount ?? 0}</strong> Following</span>
               <span><strong>{currentProfile.followersCount ?? 0}</strong> Followers</span>
             </div>
