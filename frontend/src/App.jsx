@@ -2476,11 +2476,32 @@ color: "#111111",
               <p>Woosh is an evolving project. Features and details may change as it grows, and feedback helps shape what comes next.</p>
             </div>
 
-            <div className="about-detail">
-              <h3>Credits</h3>
-              <p>Thanks to everyone who helps make Woosh possible. The people and contributions behind Woosh will be listed here.</p>
-              <div className="about-credits-placeholder">Credits coming soon</div>
-            </div>
+            <div className="settings-section">
+  <h2>Credits</h2>
+  <p>
+    Woosh is made possible by the people who help build, improve,
+    and test the platform. Thank you to everyone who has contributed.
+  </p>
+
+  <div className="about-detail">
+    <h3>Founder</h3>
+    <p>@waff — Founder and super cool guy</p>
+  </div>
+
+  <div className="about-detail">
+    <h3>Development</h3>
+    <p> @xEntityx404— Developer</p>
+  </div>
+
+  <div className="about-detail">
+    <h3>Beta Testers</h3>
+    <p>@Hello/@Oreo — Beta Tester</p>
+    <p>@JacobyLivingston23— Beta Tester</p>
+    <p>@MadeOfGlass10 — Beta Tester</p>
+    <p>@Armore_7 — Beta Tester</p>
+    <p>@Scipes — Beta Tester</p>
+  </div>
+</div>
 
             <div className="about-footer">
               <span>woosh</span>
