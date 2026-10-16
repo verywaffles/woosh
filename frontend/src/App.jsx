@@ -43,6 +43,7 @@ function App() {
 
   const [currentProfile, setCurrentProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [followBusy, setFollowBusy] = useState(false);
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [editDisplayName, setEditDisplayName] = useState("");
@@ -785,9 +786,15 @@ const leaveGroup = async () => {
         throw new Error("Profile not found.");
       }
 
+      const followData = token
+        ? await apiFetch(`/api/users/${encodeURIComponent(profileUsername)}/follow-status`).catch(() => ({}))
+        : {};
       setCurrentProfile({
         ...profile,
         wooshes: data.wooshes || [],
+        followersCount: profile.followersCount ?? 0,
+        followingCount: profile.followingCount ?? 0,
+        isFollowing: Boolean(followData.isFollowing),
       });
 
       setEditingProfile(false);
@@ -825,6 +832,31 @@ const leaveGroup = async () => {
 
     setCurrentProfile(null);
     setActivePage("Wooshes");
+  };
+
+  const toggleFollow = async () => {
+    if (!token) {
+      setAuthPage("login");
+      return;
+    }
+    if (!currentProfile || !loggedInUser || followBusy) return;
+    try {
+      setFollowBusy(true);
+      const method = currentProfile.isFollowing ? "DELETE" : "POST";
+      const result = await apiFetch(
+        `/api/users/${encodeURIComponent(currentProfile.username)}/follow`,
+        { method }
+      );
+      setCurrentProfile((current) => ({
+        ...current,
+        isFollowing: Boolean(result.isFollowing),
+        followersCount: result.followersCount ?? current.followersCount,
+      }));
+    } catch (error) {
+      alert(error.message || "Could not update follow.");
+    } finally {
+      setFollowBusy(false);
+    }
   };
 
   // ============================================================
@@ -2141,6 +2173,21 @@ color: "#111111",
               <p className="profile-bio">
                 {currentProfile.bio}
               </p>
+            )}
+
+            <div className="profile-follow-stats">
+              <span><strong>{currentProfile.followingCount ?? 0}</strong> Following</span>
+              <span><strong>{currentProfile.followersCount ?? 0}</strong> Followers</span>
+            </div>
+
+            {loggedInUser && !isOwnProfile && (
+              <button
+                className="edit-profile-button"
+                onClick={toggleFollow}
+                disabled={followBusy}
+              >
+                {followBusy ? "Please wait..." : currentProfile.isFollowing ? "Following" : "Follow"}
+              </button>
             )}
 
             {isOwnProfile && !editingProfile && (
