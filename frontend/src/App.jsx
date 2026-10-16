@@ -2444,6 +2444,53 @@ color: "#111111",
       return renderDmsPage();
     }
 
+    if (activePage === "Settings") {
+      return (
+        <section className="settings-page">
+          <header className="settings-page-header">
+            <h1>Settings</h1>
+            <p>Learn more about Woosh.</p>
+          </header>
+
+          <section className="settings-section">
+            <div className="settings-section-heading">
+              <h2>About Woosh</h2>
+              <p>A little about the place we're building.</p>
+            </div>
+
+            <div className="about-hero">
+              <img src={wooshIcon} alt="Woosh logo" />
+              <div>
+                <h3>woosh</h3>
+                <p>A place to share what's happening, keep up with people, and stay connected.</p>
+              </div>
+            </div>
+
+            <div className="about-detail">
+              <h3>Our idea</h3>
+              <p>Woosh brings posts, short videos, and conversations together in one place. Share your thoughts, discover what others are posting, and connect with people in your community.</p>
+            </div>
+
+            <div className="about-detail">
+              <h3>Made to grow</h3>
+              <p>Woosh is an evolving project. Features and details may change as it grows, and feedback helps shape what comes next.</p>
+            </div>
+
+            <div className="about-detail">
+              <h3>Credits</h3>
+              <p>Thanks to everyone who helps make Woosh possible. The people and contributions behind Woosh will be listed here.</p>
+              <div className="about-credits-placeholder">Credits coming soon</div>
+            </div>
+
+            <div className="about-footer">
+              <span>woosh</span>
+              <span>Built for sharing and connecting.</span>
+            </div>
+          </section>
+        </section>
+      );
+    }
+
     if (activePage === "Account") {
       if (loggedInUser) {
         return (
@@ -2673,6 +2720,7 @@ color: "#111111",
               "Blabbers",
               "Community",
               "Account",
+              "Settings",
             ].map((page) => (
               <button
                 key={page}
