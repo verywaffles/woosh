@@ -25,6 +25,9 @@ function App() {
   const [wooshImage, setWooshImage] = useState(null);
 
   const [wooshes, setWooshes] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
 
   const [wooshies, setWooshies] = useState([]);
   const [viewedWooshies, setViewedWooshies] = useState(() => new Set());
@@ -124,6 +127,89 @@ function App() {
 
     return data;
   };
+
+  // ============================================================
+  // NOTIFICATIONS
+  // ============================================================
+
+  const loadUnreadNotificationCount = async () => {
+    if (!loggedInUser || !token) {
+      setUnreadNotificationCount(0);
+      return;
+    }
+    try {
+      const data = await apiFetch("/api/notifications/unread-count");
+      setUnreadNotificationCount(Number(data.count) || 0);
+    } catch (error) {
+      console.error("Could not load notification count:", error);
+    }
+  };
+
+  const loadNotifications = async () => {
+    if (!loggedInUser || !token) {
+      setNotifications([]);
+      setUnreadNotificationCount(0);
+      return;
+    }
+    try {
+      setLoadingNotifications(true);
+      const data = await apiFetch("/api/notifications");
+      setNotifications(data.notifications || []);
+      setUnreadNotificationCount((data.notifications || []).filter((item) => !item.isRead).length);
+    } catch (error) {
+      console.error("Could not load notifications:", error);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  const markNotificationRead = async (notification) => {
+    if (!notification || notification.isRead) return;
+    try {
+      await apiFetch(`/api/notifications/${notification.id}/read`, { method: "PATCH" });
+      setNotifications((current) => current.map((item) => item.id === notification.id ? { ...item, isRead: true } : item));
+      setUnreadNotificationCount((count) => Math.max(0, count - 1));
+    } catch (error) {
+      console.error("Could not mark notification read:", error);
+    }
+  };
+
+  const markAllNotificationsRead = async () => {
+    try {
+      await apiFetch("/api/notifications/read-all", { method: "PATCH" });
+      setNotifications((current) => current.map((item) => ({ ...item, isRead: true })));
+      setUnreadNotificationCount(0);
+    } catch (error) {
+      alert(error.message || "Could not mark notifications as read.");
+    }
+  };
+
+  const openNotification = async (notification) => {
+    await markNotificationRead(notification);
+    if (notification.wooshId) {
+      setActivePage("Wooshes");
+      setCurrentProfile(null);
+      window.history.pushState({}, "", "/");
+      await loadWooshes();
+    } else if (notification.actorUsername) {
+      await openProfile(notification.actorUsername);
+    }
+  };
+
+  useEffect(() => {
+    if (!loggedInUser || !token) {
+      setNotifications([]);
+      setUnreadNotificationCount(0);
+      return undefined;
+    }
+    loadUnreadNotificationCount();
+    const interval = window.setInterval(loadUnreadNotificationCount, 30000);
+    return () => window.clearInterval(interval);
+  }, [loggedInUser, token]);
+
+  useEffect(() => {
+    if (activePage === "Notifications") loadNotifications();
+  }, [activePage, loggedInUser, token]);
 
   // ============================================================
   // LOAD WOOSHES
@@ -2444,6 +2530,48 @@ color: "#111111",
       return renderDmsPage();
     }
 
+    if (activePage === "Notifications") {
+      const notificationText = (notification) => {
+        const actor = notification.actorDisplayName || notification.actorUsername || "Someone";
+        if (notification.type === "follow") return <><strong>{actor}</strong> followed you.</>;
+        if (notification.type === "like") return <><strong>{actor}</strong> liked your Woosh.</>;
+        return <><strong>{actor}</strong> commented on your Woosh.</>;
+      };
+
+      return (
+        <section className="notifications-page">
+          <header className="notifications-header">
+            <div>
+              <h1>Notifications</h1>
+              <p>Updates about your Wooshes and your community.</p>
+            </div>
+            <button className="post-button" onClick={markAllNotificationsRead} disabled={!unreadNotificationCount}>
+              Mark all as read
+            </button>
+          </header>
+          {loadingNotifications ? (
+            <div className="notification-empty">Loading notifications...</div>
+          ) : notifications.length === 0 ? (
+            <div className="notification-empty"><h2>You're all caught up.</h2><p>When someone follows you, likes a Woosh, or comments, you'll see it here.</p></div>
+          ) : (
+            <div className="notification-list">
+              {notifications.map((notification) => (
+                <button key={notification.id} className={`notification-item ${notification.isRead ? "" : "unread"}`} onClick={() => openNotification(notification)}>
+                  <span className="notification-avatar">{(notification.actorUsername || "?").slice(0, 1).toUpperCase()}</span>
+                  <span className="notification-copy">
+                    <span>{notificationText(notification)}</span>
+                    {notification.wooshText && <span className="notification-preview">{notification.wooshText}</span>}
+                    <time>{new Date(notification.createdAt + (notification.createdAt.endsWith("Z") ? "" : "Z")).toLocaleString()}</time>
+                  </span>
+                  {!notification.isRead && <span className="notification-unread-dot" aria-label="Unread" />}
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      );
+    }
+
     if (activePage === "Settings") {
       return (
         <section className="settings-page">
@@ -2741,6 +2869,7 @@ color: "#111111",
               "Wooshies",
               "Blabbers",
               "Community",
+              "Notifications",
               "Account",
               "Settings",
             ].map((page) => (
@@ -2773,9 +2902,8 @@ color: "#111111",
                   }
                 }}
               >
-                {page === "Community"
-                  ? "Messages"
-                  : page}
+                {page === "Community" ? "Messages" : page}
+                {page === "Notifications" && unreadNotificationCount > 0 && <span className="nav-notification-count">{unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}</span>}
               </button>
             ))}
           </nav>
