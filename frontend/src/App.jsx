@@ -2561,7 +2561,7 @@ color: "#111111",
                   <span className="notification-copy">
                     <span>{notificationText(notification)}</span>
                     {notification.wooshText && <span className="notification-preview">{notification.wooshText}</span>}
-                    <time>{new Date(notification.createdAt + (notification.createdAt.endsWith("Z") ? "" : "Z")).toLocaleString()}</time>
+                    <time>{new Date(notification.createdAt.includes("T") ? notification.createdAt : notification.createdAt.replace(" ", "T") + "Z").toLocaleString()}</time>
                   </span>
                   {!notification.isRead && <span className="notification-unread-dot" aria-label="Unread" />}
                 </button>
