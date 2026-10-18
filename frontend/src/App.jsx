@@ -2618,27 +2618,24 @@ color: "#111111",
       </header>
 
       <div className="layout">
-        <aside className="sidebar">
+        <aside className="sidebar" aria-label="Main navigation">
           <nav>
             {[
-              "Wooshes",
-              "Wooshies",
-              "Blabbers",
-              "Community",
-              "Account",
-            ].map((page) => (
+              { page: "Wooshes", label: "Wooshes", symbol: "feed" },
+              { page: "Wooshies", label: "Wooshies", symbol: "video" },
+              { page: "Blabbers", label: "Blabbers", symbol: "voice" },
+              { page: "Community", label: "Messages", symbol: "messages" },
+              { page: "Account", label: "Account", symbol: "account" },
+            ].map(({ page, label, symbol }) => (
               <button
                 key={page}
-                className={`nav-button ${
-                  activePage === page
-                    ? "active"
-                    : ""
-                }`}
+                type="button"
+                aria-label={label}
+                title={label}
+                aria-current={activePage === page ? "page" : undefined}
+                className={`nav-button ${activePage === page ? "active" : ""}`}
                 onClick={() => {
-                  if (
-                    page === "Account" &&
-                    loggedInUser
-                  ) {
+                  if (page === "Account" && loggedInUser) {
                     openProfile(loggedInUser);
                     return;
                   }
@@ -2656,9 +2653,39 @@ color: "#111111",
                   }
                 }}
               >
-                {page === "Community"
-                  ? "Messages"
-                  : page}
+                <svg className="nav-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  {symbol === "feed" && (
+                    <>
+                      <rect x="3.5" y="4" width="17" height="4" rx="1.5" />
+                      <rect x="3.5" y="10" width="17" height="4" rx="1.5" />
+                      <rect x="3.5" y="16" width="11" height="4" rx="1.5" />
+                    </>
+                  )}
+                  {symbol === "video" && (
+                    <>
+                      <rect x="3" y="4.5" width="18" height="15" rx="3" />
+                      <path className="nav-symbol-cutout" d="M10 8.5 16 12l-6 3.5z" />
+                    </>
+                  )}
+                  {symbol === "voice" && (
+                    <>
+                      <path d="M3 13h3l2-6 3 11 3-14 3 9h4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </>
+                  )}
+                  {symbol === "messages" && (
+                    <>
+                      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h8A2.5 2.5 0 0 1 17 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-4 3v-3.3a2.4 2.4 0 0 1-1-2z" />
+                      <path d="M9 15h5.5a2.5 2.5 0 0 0 2.5-2.5V9h1.5A2.5 2.5 0 0 1 21 11.5v5a2.5 2.5 0 0 1-2.5 2.5H16l-3.5 2v-2H11A2 2 0 0 1 9 17z" />
+                    </>
+                  )}
+                  {symbol === "account" && (
+                    <>
+                      <circle cx="12" cy="8" r="3.3" />
+                      <path d="M4.5 20a7.5 7.5 0 0 1 15 0z" />
+                    </>
+                  )}
+                </svg>
+                <span className="nav-label">{label}</span>
               </button>
             ))}
           </nav>
