@@ -1,0 +1,68 @@
+.explore-page { max-width: 720px; margin: 0 auto; color: #111; }
+.explore-heading { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; }
+.explore-eyebrow { color: #777; font-size: 10px; font-weight: 750; letter-spacing: 1.6px; margin-bottom: 7px; }
+.explore-heading h1 { font-size: 34px; letter-spacing: -1.2px; margin-bottom: 7px; }
+.explore-heading p:last-child, .explore-section-heading p { color: #777; font-size: 13px; line-height: 1.5; }
+.explore-search { display: flex; align-items: center; gap: 10px; border: 1px solid #e4e4e4; background: #fafafa; border-radius: 14px; padding: 8px 9px 8px 15px; margin-bottom: 32px; transition: border-color .15s, box-shadow .15s; }
+.explore-search:focus-within { border-color: #aaa; box-shadow: 0 0 0 3px rgba(0,0,0,.035); }
+.explore-search-icon { font-size: 25px; color: #777; line-height: 1; transform: rotate(-20deg); }
+.explore-search input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #111; font-size: 14px; }
+.explore-search-button { flex-shrink: 0; background: #111; color: #fff; border-radius: 9px; padding: 10px 14px; font-size: 12px; font-weight: 650; }
+.explore-search-button:hover { background: #333; }
+.explore-clear { color: #777; font-size: 12px; padding: 7px; }
+.explore-section { margin-bottom: 34px; }
+.explore-section-heading { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 13px; }
+.explore-section-heading h2, .explore-results-heading h2 { font-size: 19px; letter-spacing: -.45px; margin-bottom: 4px; }
+.explore-tag-list, .explore-user-list { border: 1px solid #eee; border-radius: 13px; overflow: hidden; }
+.explore-trending-tag, .explore-tag-row { width: 100%; display: flex; align-items: center; gap: 13px; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; text-align: left; transition: background .15s; }
+.explore-trending-tag:last-child, .explore-tag-row:last-child { border-bottom: 0; }
+.explore-trending-tag:hover, .explore-tag-row:hover, .explore-user:hover { background: #f8f8f8; }
+.explore-tag-rank { width: 24px; color: #999; font-size: 11px; font-variant-numeric: tabular-nums; }
+.explore-trending-tag > span:nth-child(2), .explore-tag-row > span:nth-child(2) { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.explore-trending-tag strong, .explore-tag-row strong { font-size: 13px; }
+.explore-trending-tag small, .explore-tag-row small { color: #888; font-size: 11px; }
+.explore-chevron { color: #999; font-size: 24px; line-height: 1; }
+.explore-post-list { display: flex; flex-direction: column; gap: 12px; }
+.explore-post { border: 1px solid #ededed; border-radius: 13px; padding: 16px; background: #fff; }
+.explore-post-author { display: inline-flex; align-items: center; gap: 10px; text-align: left; }
+.explore-post-author > span:last-child { display: flex; flex-direction: column; gap: 3px; }
+.explore-post-author strong { font-size: 12px; }
+.explore-post-author small { color: #888; font-size: 11px; }
+.explore-post time { float: right; color: #999; font-size: 11px; }
+.explore-avatar { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; flex-shrink: 0; border-radius: 50%; background: #f0f0f0; color: #333; font-weight: 700; font-size: 13px; }
+.explore-post-text { margin: 13px 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.65; }
+.explore-inline-tag { color: #555; font-weight: 650; display: inline; }
+.explore-inline-tag:hover { text-decoration: underline; }
+.explore-post-image { display: block; max-height: 420px; width: 100%; object-fit: contain; background: #fafafa; border-radius: 9px; margin: 12px 0; }
+.explore-post-stats { display: flex; gap: 18px; padding-top: 11px; margin-top: 10px; border-top: 1px solid #f3f3f3; color: #888; font-size: 11px; }
+.explore-user { display: flex; align-items: center; gap: 11px; width: 100%; padding: 13px 15px; border-bottom: 1px solid #f0f0f0; text-align: left; transition: background .15s; }
+.explore-user:last-child { border-bottom: 0; }
+.explore-user-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+.explore-user-copy strong { font-size: 13px; }
+.explore-user-copy > span { color: #888; font-size: 11px; }
+.explore-user-copy small { color: #666; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.explore-user-count { color: #999; font-size: 10px; white-space: nowrap; }
+.explore-results { margin-top: -10px; }
+.explore-results-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.explore-results-heading h2 { overflow-wrap: anywhere; }
+.explore-results-heading h2 span { color: #777; font-weight: 500; }
+.explore-results-heading > span { color: #888; font-size: 11px; white-space: nowrap; }
+.explore-tabs { display: flex; gap: 5px; border-bottom: 1px solid #eee; margin-bottom: 20px; }
+.explore-tabs button { padding: 10px 14px; color: #777; font-size: 12px; border-bottom: 2px solid transparent; }
+.explore-tabs button.active { color: #111; font-weight: 700; border-bottom-color: #111; }
+.explore-result-section { margin-bottom: 25px; }
+.explore-result-section h3 { color: #777; text-transform: uppercase; letter-spacing: 1px; font-size: 10px; margin-bottom: 10px; }
+.explore-empty, .explore-loading { text-align: center; padding: 30px 18px; color: #777; font-size: 13px; }
+.explore-empty h3 { color: #222; font-size: 15px; margin-bottom: 7px; text-transform: none; letter-spacing: 0; }
+.explore-empty p { font-size: 12px; line-height: 1.5; }
+.explore-empty.compact { border: 1px dashed #e5e5e5; border-radius: 12px; padding: 24px 16px; }
+.explore-error { padding: 12px 14px; margin: -18px 0 24px; border-radius: 9px; background: #fff5f5; color: #a33; font-size: 12px; }
+@media (max-width: 640px) {
+  .explore-heading h1 { font-size: 29px; }
+  .explore-search { gap: 7px; padding-left: 10px; }
+  .explore-search input { font-size: 12px; }
+  .explore-search-button { padding: 10px; }
+  .explore-post, .explore-trending-tag, .explore-tag-row { padding: 12px; }
+  .explore-user-count { display: none; }
+  .explore-results-heading { align-items: flex-start; flex-direction: column; gap: 2px; }
+}
