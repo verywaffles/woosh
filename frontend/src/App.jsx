@@ -3,6 +3,7 @@ import "./index.css";
 import wooshIcon from "./assets/woosh.png";
 import Blabbers from "./Blabbers.jsx";
 import MessagingHub from "./MessagingHub.jsx";
+import Explore from "./Explore.jsx";
 
 const API_URL = "https://woosh-api.duckdns.org";
 
@@ -2286,6 +2287,10 @@ color: "#111111",
   };
 
   const renderPage = () => {
+    if (activePage === "Explore") {
+      return <Explore apiFetch={apiFetch} openProfile={openProfile} loggedInUser={loggedInUser} />;
+    }
+
     if (activePage === "Blabbers") {
       return <Blabbers loggedInUser={loggedInUser} onLogin={() => setAuthPage("login")} />;
     }
@@ -2622,6 +2627,7 @@ color: "#111111",
           <nav>
             {[
               "Wooshes",
+              "Explore",
               "Wooshies",
               "Blabbers",
               "Community",
