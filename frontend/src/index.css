@@ -2437,7 +2437,6 @@ nav {
   }
 }
 
-
 /* =========================================================
    NOTIFICATIONS
    ========================================================= */
@@ -2448,6 +2447,7 @@ nav {
   padding: 28px 24px 60px;
   color: var(--text-h, #111);
 }
+
 .notifications-header {
   display: flex;
   align-items: center;
@@ -2456,20 +2456,24 @@ nav {
   padding-bottom: 22px;
   border-bottom: 1px solid var(--border, #e7e7e7);
 }
+
 .notifications-header h1 {
   margin: 0 0 6px;
   font-size: 28px;
   letter-spacing: -0.04em;
 }
+
 .notifications-header p {
   color: var(--text, #666);
   line-height: 1.5;
   font-size: 14px;
 }
+
 .notification-list {
   display: flex;
   flex-direction: column;
 }
+
 .notification-item {
   width: 100%;
   display: flex;
@@ -2481,12 +2485,15 @@ nav {
   border-bottom: 1px solid var(--border, #e7e7e7);
   transition: background 120ms ease;
 }
+
 .notification-item:hover {
   background: var(--social-bg, #f7f7f7);
 }
+
 .notification-item.unread {
   background: rgba(0, 0, 0, 0.035);
 }
+
 .notification-avatar {
   width: 42px;
   height: 42px;
@@ -2498,6 +2505,7 @@ nav {
   background: var(--background, #fff);
   font-weight: 700;
 }
+
 .notification-copy {
   min-width: 0;
   flex: 1;
@@ -2507,9 +2515,11 @@ nav {
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
+
 .notification-copy strong {
   font-weight: 700;
 }
+
 .notification-preview {
   display: -webkit-box;
   overflow: hidden;
@@ -2518,10 +2528,12 @@ nav {
   color: var(--text, #666);
   font-size: 13px;
 }
+
 .notification-copy time {
   color: var(--text, #777);
   font-size: 12px;
 }
+
 .notification-unread-dot {
   width: 8px;
   height: 8px;
@@ -2530,17 +2542,20 @@ nav {
   border-radius: 50%;
   background: #111;
 }
+
 .notification-empty {
   padding: 54px 20px;
   text-align: center;
   color: var(--text, #666);
   line-height: 1.6;
 }
+
 .notification-empty h2 {
   margin-bottom: 8px;
   color: var(--text-h, #111);
   font-size: 20px;
 }
+
 .nav-notification-count {
   min-width: 20px;
   height: 20px;
@@ -2555,12 +2570,22 @@ nav {
   font-size: 11px;
   font-weight: 700;
 }
-@media (max-width: 600px) {
-  .notifications-page { padding: 22px 14px 40px; }
-  .notifications-header { align-items: flex-start; flex-direction: column; }
-  .notification-item { padding: 16px 8px; gap: 10px; }
-}
 
+@media (max-width: 600px) {
+  .notifications-page {
+    padding: 22px 14px 40px;
+  }
+
+  .notifications-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .notification-item {
+    padding: 16px 8px;
+    gap: 10px;
+  }
+}
 
 /* Main / Following feed switcher */
 .feed-tabs {
@@ -2570,6 +2595,7 @@ nav {
   border-bottom: 1px solid var(--border-color, #e5e5e5);
   margin-bottom: 16px;
 }
+
 .feed-tab {
   appearance: none;
   border: 1px solid transparent;
@@ -2581,9 +2607,153 @@ nav {
   font-weight: 600;
   cursor: pointer;
 }
-.feed-tab:hover { background: rgba(127, 127, 127, 0.09); }
+
+.feed-tab:hover {
+  background: rgba(127, 127, 127, 0.09);
+}
+
 .feed-tab.active {
   color: #111;
   background: #f0f0f0;
   border-color: #d8d8d8;
+}
+
+/* =========================================================
+   RESPONSIVE NAVIGATION — custom vector symbols on mobile
+   ========================================================= */
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  box-sizing: border-box;
+}
+
+.nav-symbol {
+  display: block;
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-symbol .nav-symbol-cutout {
+  fill: #fff;
+  stroke: none;
+}
+
+.nav-label {
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .layout {
+    display: block;
+    min-height: 100dvh;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    border-top: 1px solid #e8e8e8;
+    border-right: 0;
+    border-bottom: 0;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 4px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .sidebar .nav-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 7px 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 10px;
+    line-height: 1;
+    background: transparent;
+    color: #777;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sidebar .nav-button.active {
+    background: #eeeeee;
+    color: #111;
+    font-weight: 700;
+  }
+
+  .sidebar .nav-button:hover {
+    background: #f3f3f3;
+  }
+
+  .sidebar .nav-symbol {
+    width: 23px;
+    height: 23px;
+    flex-basis: 23px;
+  }
+
+  .sidebar .nav-label {
+    display: none;
+  }
+
+  .main-content {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    padding: 23px 14px calc(32px + env(safe-area-inset-bottom));
+  }
+
+  .dm-chat {
+    height: calc(100dvh - 155px);
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 360px) {
+  .sidebar {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  .sidebar nav {
+    gap: 2px;
+  }
+
+  .sidebar .nav-button {
+    min-height: 46px;
+  }
 }
