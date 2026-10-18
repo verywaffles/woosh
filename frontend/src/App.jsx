@@ -25,6 +25,9 @@ function App() {
   const [wooshImage, setWooshImage] = useState(null);
 
   const [wooshes, setWooshes] = useState([]);
+  const [feedMode, setFeedMode] = useState("main");
+  const [followingWooshes, setFollowingWooshes] = useState([]);
+  const [loadingFollowingWooshes, setLoadingFollowingWooshes] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
@@ -232,6 +235,22 @@ function App() {
   useEffect(() => {
     loadWooshes();
   }, []);
+
+  const loadFollowingWooshes = async () => {
+    if (!token) { setFollowingWooshes([]); return; }
+    try {
+      setLoadingFollowingWooshes(true);
+      const data = await apiFetch("/api/wooshes/following");
+      setFollowingWooshes(data.wooshes || []);
+    } catch (error) {
+      console.error("Could not load Following feed:", error);
+    } finally { setLoadingFollowingWooshes(false); }
+  };
+
+  useEffect(() => {
+    if (loggedInUser && token) loadFollowingWooshes();
+    else setFollowingWooshes([]);
+  }, [loggedInUser, token]);
 
   const loadWooshies = async () => {
     try {
@@ -2695,35 +2714,25 @@ color: "#111111",
       <>
         <div className="wooshes-header">
           <h1>Wooshes</h1>
-
-          {loggedInUser && (
-            <button
-              className="post-button"
-              onClick={() =>
-                setShowComposer(true)
-              }
-            >
-              Post
-            </button>
-          )}
+          {loggedInUser && <button className="post-button" onClick={() => setShowComposer(true)}>Post</button>}
         </div>
-
+        <div className="feed-tabs" role="tablist" aria-label="Woosh feed">
+          <button type="button" role="tab" aria-selected={feedMode === "main"} className={feedMode === "main" ? "feed-tab active" : "feed-tab"} onClick={() => setFeedMode("main")}>Main</button>
+          <button type="button" role="tab" aria-selected={feedMode === "following"} className={feedMode === "following" ? "feed-tab active" : "feed-tab"} onClick={() => {
+            if (!loggedInUser || !token) { setAuthPage("login"); return; }
+            setFeedMode("following");
+            loadFollowingWooshes();
+          }}>Following</button>
+        </div>
         <div className="woosh-feed">
-          {loadingWooshes ? (
+          {(feedMode === "main" ? loadingWooshes : loadingFollowingWooshes) ? (
+            <div className="page-placeholder"><h2>Loading...</h2></div>
+          ) : (feedMode === "main" ? wooshes : followingWooshes).length === 0 ? (
             <div className="page-placeholder">
-              <h2>Loading...</h2>
+              <h2>{feedMode === "main" ? "Welcome to WOOSH" : "Your Following feed is quiet"}</h2>
+              <p>{feedMode === "main" ? "Your feed will appear here." : "Follow some accounts to see their latest Wooshes here."}</p>
             </div>
-          ) : wooshes.length === 0 ? (
-            <div className="page-placeholder">
-              <h2>Welcome to WOOSH</h2>
-
-              <p>
-                Your feed will appear here.
-              </p>
-            </div>
-          ) : (
-            wooshes.map(renderWoosh)
-          )}
+          ) : (feedMode === "main" ? wooshes : followingWooshes).map(renderWoosh)}
         </div>
       </>
     );
