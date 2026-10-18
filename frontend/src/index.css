@@ -2683,3 +2683,10 @@ nav {
     text-align: left;
   }
 }
+
+@media (max-width: 600px) {
+  .brand { order: 1; min-width: 0; }
+  .auth-buttons { order: 2; gap: 6px; }
+  .auth-buttons button { padding: 8px 10px; font-size: 12px; }
+  .mobile-menu-toggle { order: 3; margin-left: 0; }
+}
