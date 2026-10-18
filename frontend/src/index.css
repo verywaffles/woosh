@@ -2560,3 +2560,30 @@ nav {
   .notifications-header { align-items: flex-start; flex-direction: column; }
   .notification-item { padding: 16px 8px; gap: 10px; }
 }
+
+
+/* Main / Following feed switcher */
+.feed-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--border-color, #e5e5e5);
+  margin-bottom: 16px;
+}
+.feed-tab {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  border-radius: 999px;
+  padding: 9px 18px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.feed-tab:hover { background: rgba(127, 127, 127, 0.09); }
+.feed-tab.active {
+  color: #111;
+  background: #f0f0f0;
+  border-color: #d8d8d8;
+}
