@@ -13,6 +13,7 @@ function App() {
     localStorage.getItem("wooshLoggedInUser") ? null : "splash"
   );
   const [showComposer, setShowComposer] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [loggedInUser, setLoggedInUser] = useState(
     localStorage.getItem("wooshLoggedInUser")
@@ -2836,6 +2837,21 @@ color: "#111111",
           </span>
         </div>
 
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="woosh-mobile-navigation"
+          onClick={() => setMobileMenuOpen((open) => !open)}
+        >
+          {mobileMenuOpen ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+          )}
+        </button>
+
         <div className="auth-buttons">
           {loggedInUser ? (
             <>
@@ -2875,9 +2891,18 @@ color: "#111111",
         </div>
       </header>
 
+      {mobileMenuOpen && (
+        <button
+          type="button"
+          className="mobile-menu-overlay"
+          aria-label="Close navigation menu"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       <div className="layout">
-        <aside className="sidebar">
-          <nav>
+        <aside className={`sidebar ${mobileMenuOpen ? "mobile-menu-open" : ""}`}>
+          <nav id="woosh-mobile-navigation" aria-label="Main navigation">
             {[
               "Wooshes",
               "Explore",
@@ -2900,11 +2925,13 @@ color: "#111111",
                     page === "Account" &&
                     loggedInUser
                   ) {
+                    setMobileMenuOpen(false);
                     openProfile(loggedInUser);
                     return;
                   }
 
                   setActivePage(page);
+                  setMobileMenuOpen(false);
 
                   if (page === "Community") {
                     setActiveConversation(null);
