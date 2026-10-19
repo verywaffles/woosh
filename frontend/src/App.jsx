@@ -57,6 +57,8 @@ function App() {
   const [editingProfile, setEditingProfile] = useState(false);
   const [editDisplayName, setEditDisplayName] = useState("");
   const [editBio, setEditBio] = useState("");
+  const [editProfilePicture, setEditProfilePicture] = useState(null);
+  const [editProfileBanner, setEditProfileBanner] = useState(null);
   const [savingProfile, setSavingProfile] = useState(false);
 
   // ============================================================
@@ -976,12 +978,70 @@ const leaveGroup = async () => {
 
     setEditDisplayName(currentProfile.displayName || "");
     setEditBio(currentProfile.bio || "");
+    setEditProfilePicture(
+      currentProfile.profilePicture || currentProfile.profile_picture || null
+    );
+    setEditProfileBanner(
+      currentProfile.profileBanner || currentProfile.profile_banner || null
+    );
     setEditingProfile(true);
   };
 
-  // ============================================================
-  // PROFILE PICTURE UPLOAD
-  // ============================================================
+  const optimizeProfileImage = (file, maxDimension, quality = 0.84) =>
+    new Promise((resolve, reject) => {
+      if (!file || !file.type.startsWith("image/")) {
+        reject(new Error("Choose an image file."));
+        return;
+      }
+
+      if (file.size > 8 * 1024 * 1024) {
+        reject(new Error("Choose an image smaller than 8 MB."));
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Could not read that image."));
+      reader.onload = () => {
+        const image = new Image();
+        image.onerror = () => reject(new Error("That image could not be opened."));
+        image.onload = () => {
+          const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          const context = canvas.getContext("2d");
+          if (!context) {
+            reject(new Error("Your browser could not process that image."));
+            return;
+          }
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        image.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+  const handleProfileImageChange = async (event, imageType) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    try {
+      const optimized = await optimizeProfileImage(
+        file,
+        imageType === "banner" ? 1600 : 512,
+        imageType === "banner" ? 0.82 : 0.86
+      );
+      if (imageType === "banner") {
+        setEditProfileBanner(optimized);
+      } else {
+        setEditProfilePicture(optimized);
+      }
+    } catch (error) {
+      alert(error.message || "Could not use that image.");
+    }
+  };
 
   // ============================================================
   // SAVE PROFILE
@@ -998,6 +1058,8 @@ const leaveGroup = async () => {
         body: JSON.stringify({
           displayName: editDisplayName.trim(),
           bio: editBio.trim(),
+          profilePicture: editProfilePicture,
+          profileBanner: editProfileBanner,
         }),
       });
 
@@ -1207,21 +1269,34 @@ const leaveGroup = async () => {
   // ============================================================
 
   const renderAvatar = (
-  profile,
-  className = "profile-picture"
-) => {
-  const initial =
-    profile?.username?.trim()?.charAt(0)?.toUpperCase() || "?";
+    profile,
+    className = "profile-picture"
+  ) => {
+    const initial =
+      profile?.username?.trim()?.charAt(0)?.toUpperCase() || "?";
+    const picture =
+      profile?.profilePicture || profile?.profile_picture || null;
 
-  return (
-    <div
-      className={`${className} profile-picture-placeholder`}
-      aria-label={`${profile?.username || "User"} avatar`}
-    >
-      {initial}
-    </div>
-  );
-};
+    if (picture) {
+      return (
+        <img
+          className={`${className} profile-picture-image`}
+          src={picture}
+          alt={`@${profile?.username || "user"} avatar`}
+          loading="lazy"
+        />
+      );
+    }
+
+    return (
+      <div
+        className={`${className} profile-picture-placeholder`}
+        aria-label={`${profile?.username || "User"} avatar`}
+      >
+        {initial}
+      </div>
+    );
+  };
 
   // ============================================================
   // RENDER WOOSH
@@ -2259,7 +2334,16 @@ color: "#111111",
           ← Back
         </button>
 
-        <div className="profile-header">
+        {(currentProfile.profileBanner || currentProfile.profile_banner) && (
+          <div className="profile-banner">
+            <img
+              src={currentProfile.profileBanner || currentProfile.profile_banner}
+              alt={`@${currentProfile.username} profile banner`}
+            />
+          </div>
+        )}
+
+        <div className={`profile-header ${currentProfile.profileBanner || currentProfile.profile_banner ? "has-profile-banner" : ""}`}>
           <div className="profile-avatar-large">
             {renderAvatar(
               currentProfile,
@@ -2333,6 +2417,81 @@ color: "#111111",
                 setEditBio(event.target.value)
               }
             />
+
+            <div className="profile-image-editors">
+              <div className="profile-image-editor">
+                <strong>Profile picture</strong>
+                <div className="profile-picture-editor">
+                  {editProfilePicture ? (
+                    <img
+                      className="profile-picture-preview"
+                      src={editProfilePicture}
+                      alt="Profile picture preview"
+                    />
+                  ) : (
+                    <div className="profile-picture-preview profile-picture-placeholder">
+                      {currentProfile.username?.charAt(0)?.toUpperCase() || "?"}
+                    </div>
+                  )}
+                  <div className="profile-image-controls">
+                    <label className="profile-file-label">
+                      Choose picture
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) => handleProfileImageChange(event, "picture")}
+                      />
+                    </label>
+                    {editProfilePicture && (
+                      <button
+                        type="button"
+                        className="profile-remove-image"
+                        onClick={() => setEditProfilePicture(null)}
+                      >
+                        Remove picture
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="profile-image-editor">
+                <strong>Profile banner</strong>
+                {editProfileBanner ? (
+                  <img
+                    className="profile-banner-preview"
+                    src={editProfileBanner}
+                    alt="Profile banner preview"
+                  />
+                ) : (
+                  <div className="profile-banner-preview profile-banner-preview-empty">
+                    No banner selected
+                  </div>
+                )}
+                <div className="profile-image-controls">
+                  <label className="profile-file-label">
+                    Choose banner
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => handleProfileImageChange(event, "banner")}
+                    />
+                  </label>
+                  {editProfileBanner && (
+                    <button
+                      type="button"
+                      className="profile-remove-image"
+                      onClick={() => setEditProfileBanner(null)}
+                    >
+                      Remove banner
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p className="profile-image-help">
+                Images are automatically resized. Your avatar keeps the same dimensions as the letter avatar.
+              </p>
+            </div>
 
             <div className="profile-edit-actions">
               <button
