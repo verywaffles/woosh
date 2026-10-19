@@ -13,6 +13,7 @@ function App() {
     localStorage.getItem("wooshLoggedInUser") ? null : "splash"
   );
   const [showComposer, setShowComposer] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [loggedInUser, setLoggedInUser] = useState(
     localStorage.getItem("wooshLoggedInUser")
@@ -2836,6 +2837,21 @@ color: "#111111",
           </span>
         </div>
 
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="woosh-mobile-navigation"
+          onClick={() => setMobileMenuOpen((open) => !open)}
+        >
+          {mobileMenuOpen ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+          )}
+        </button>
+
         <div className="auth-buttons">
           {loggedInUser ? (
             <>
@@ -2875,34 +2891,49 @@ color: "#111111",
         </div>
       </header>
 
-      <div className="layout">
-        <aside className="sidebar" aria-label="Main navigation">
-          
-<nav>
-  {[
-    { page: "Wooshes", label: "Wooshes", symbol: "feed" },
-    { page: "Explore", label: "Explore", symbol: "explore" },
-    { page: "Wooshies", label: "Wooshies", symbol: "video" },
-    { page: "Blabbers", label: "Blabbers", symbol: "voice" },
-    { page: "Community", label: "Messages", symbol: "messages" },
-    { page: "Notifications", label: "Notifications", symbol: "notifications" },
-    { page: "Account", label: "Account", symbol: "account" },
-    { page: "Settings", label: "Settings", symbol: "settings" },
-  ].map(({ page, label, symbol }) => (
-    <button
-      key={page}
-      type="button"
-      aria-label={label}
-      title={label}
-      aria-current={activePage === page ? "page" : undefined}
-      className={`nav-button ${activePage === page ? "active" : ""}`}
-      onClick={() => {
-        if (page === "Account" && loggedInUser) {
-          openProfile(loggedInUser);
-          return;
-        }
+      {mobileMenuOpen && (
+        <button
+          type="button"
+          className="mobile-menu-overlay"
+          aria-label="Close navigation menu"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
-        setActivePage(page);
+      <div className="layout">
+        <aside
+  id="woosh-mobile-navigation"
+  className={`sidebar ${mobileMenuOpen ? "mobile-menu-open" : ""}`}
+>
+          <nav>
+            {[
+              "Wooshes",
+              "Explore",
+              "Wooshies",
+              "Blabbers",
+              "Community",
+              "Notifications",
+              "Account",
+              "Settings",
+            ].map((page) => (
+              <button
+                key={page}
+                className={`nav-button ${
+                  activePage === page
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() => {
+                  if (
+                    page === "Account" &&
+                    loggedInUser
+                  ) {
+                    openProfile(loggedInUser);
+                    return;
+                  }
+
+                  setActivePage(page);
+                  setMobileMenuOpen(false);
 
         if (page === "Community") {
           setActiveConversation(null);
@@ -2916,67 +2947,58 @@ color: "#111111",
       }}
     >
       <svg
-        className="nav-symbol"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        focusable="false"
-      >
-        {symbol === "feed" && (
-          <>
-            <rect x="3.5" y="4" width="17" height="4" rx="1.5" />
-            <rect x="3.5" y="10" width="17" height="4" rx="1.5" />
-            <rect x="3.5" y="16" width="11" height="4" rx="1.5" />
-          </>
-        )}
-        {symbol === "video" && (
-          <>
-            <rect x="3" y="4.5" width="18" height="15" rx="3" />
-            <path className="nav-symbol-cutout" d="M10 8.5 16 12l-6 3.5z" />
-          </>
-        )}
-        {symbol === "voice" && (
-          <path
-            d="M3 13h3l2-6 3 11 3-14 3 9h4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        )}
-        {symbol === "messages" && (
-          <>
-            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h8A2.5 2.5 0 0 1 17 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-4 3v-3.3a2.4 2.4 0 0 1-1-2z" />
-            <path d="M9 15h5.5a2.5 2.5 0 0 0 2.5-2.5V9h1.5A2.5 2.5 0 0 1 21 11.5v5a2.5 2.5 0 0 1-2.5 2.5H16l-3.5 2v-2H11A2 2 0 0 1 9 17z" />
-          </>
-        )}
-        {symbol === "account" && (
-          <>
-            <circle cx="12" cy="8" r="3.3" />
-            <path d="M4.5 20a7.5 7.5 0 0 1 15 0z" />
-          </>
-        )}
-        {symbol === "explore" && (
-          <>
-            <circle cx="12" cy="12" r="9" />
-            <path d="m15.5 8.5-2 5-5 2 2-5z" />
-          </>
-        )}
-        {symbol === "notifications" && (
-          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
-        )}
-        {symbol === "settings" && (
-          <>
-            <circle cx="12" cy="12" r="3" />
-            <path
-              d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.8 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.8-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.8-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.8 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2z"
-              transform="translate(-1 -1)"
-            />
-          </>
-        )}
-      </svg>
+  className="nav-symbol"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+  focusable="false"
+>
+  {page === "Wooshes" && (
+    <>
+      <rect x="3.5" y="4" width="17" height="4" rx="1.5" />
+      <rect x="3.5" y="10" width="17" height="4" rx="1.5" />
+      <rect x="3.5" y="16" width="11" height="4" rx="1.5" />
+    </>
+  )}
+  {page === "Explore" && (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m15.5 8.5-2 5-5 2 2-5z" />
+    </>
+  )}
+  {page === "Wooshies" && (
+    <>
+      <circle cx="9" cy="8" r="3" />
+      <circle cx="17" cy="9" r="2.5" />
+      <path d="M3 20a6 6 0 0 1 12 0M14 15a5 5 0 0 1 7 5" />
+    </>
+  )}
+  {page === "Blabbers" && (
+    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5a2.5 2.5 0 0 1-1-2z" />
+  )}
+  {page === "Community" && (
+    <>
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h8A2.5 2.5 0 0 1 17 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-4 3v-3.3a2.4 2.4 0 0 1-1-2z" />
+      <path d="M9 15h5.5a2.5 2.5 0 0 0 2.5-2.5V9h1.5A2.5 2.5 0 0 1 21 11.5v5a2.5 2.5 0 0 1-2.5 2.5H16l-3.5 2v-2H11A2 2 0 0 1 9 17z" />
+    </>
+  )}
+  {page === "Notifications" && (
+    <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+  )}
+  {page === "Account" && (
+    <>
+      <circle cx="12" cy="8" r="3.3" />
+      <path d="M4.5 20a7.5 7.5 0 0 1 15 0z" />
+    </>
+  )}
+  {page === "Settings" && (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.8 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.8-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.8-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.8 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2z" transform="translate(-1 -1)" />
+    </>
+  )}
+</svg>
 
-      <span className="nav-label">{label}</span>
+      <span className="nav-label">{page}</span>
 
       {page === "Notifications" && unreadNotificationCount > 0 && (
         <span className="nav-notification-count">
