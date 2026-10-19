@@ -31,10 +31,9 @@ function slide(line) {
 function move2048(board, direction) {
   const next = [...board];
   for (let n = 0; n < 4; n += 1) {
-    const indexes = direction === "left" ? [0,1,2,3].map(c => n * 4 + c)
-      : direction === "right" ? [3,2,1,0].map(c => n * 4 + c)
-      : direction === "up" ? [0,1,2,3].map(r => r * 4 + n)
-      : [3,2,1,0].map(r => r * 4 + n);
+    const indexes = direction === "left" || direction === "right"
+      ? [0,1,2,3].map(c => n * 4 + c)
+      : [0,1,2,3].map(r => r * 4 + n);
     const reverse = direction === "right" || direction === "down";
     const line = indexes.map(i => board[i]);
     const result = slide(reverse ? [...line].reverse() : line);
