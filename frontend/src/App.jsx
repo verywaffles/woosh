@@ -4,6 +4,7 @@ import wooshIcon from "./assets/woosh.png";
 import Blabbers from "./Blabbers.jsx";
 import MessagingHub from "./MessagingHub.jsx";
 import Explore from "./Explore.jsx";
+import GamesCatalog from "./GamesCatalog.jsx";
 
 const API_URL = "https://woosh-api.duckdns.org";
 
@@ -2444,54 +2445,7 @@ color: "#111111",
     }
 
     if (activePage === "Minigames") {
-      return (
-        <section className="minigames-page">
-          <div className="minigames-header">
-            <div>
-              <p className="minigames-eyebrow">WOOSH ARCADE</p>
-              <h1>Someone Stole My Beans</h1>
-              <p className="minigames-description">
-                The beans are missing. Jump in and play.
-              </p>
-            </div>
-            <a
-              className="minigames-open-link"
-              href="https://someone-stole-my-beans.web.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Open game in new tab <span aria-hidden="true">↗</span>
-            </a>
-          </div>
-
-          <div className="minigames-game-shell">
-            <div className="minigames-game-topbar">
-              <span className="minigames-game-dot" aria-hidden="true" />
-              <span>Someone Stole My Beans</span>
-              <a
-                href="https://someone-stole-my-beans.web.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open separately
-              </a>
-            </div>
-            <iframe
-              className="minigames-iframe"
-              src="https://someone-stole-my-beans.web.app/"
-              title="Someone Stole My Beans game"
-              loading="lazy"
-              allow="fullscreen; gamepad"
-              allowFullScreen
-              referrerPolicy="strict-origin-when-cross-origin"
-            />
-          </div>
-          <p className="minigames-note">
-            If the game does not appear here, use “Open game in new tab.”
-            Some sites block being embedded inside another website.
-          </p>
-        </section>
-      );
+      return <GamesCatalog />;
     }
 
     if (activePage === "Blabbers") {
