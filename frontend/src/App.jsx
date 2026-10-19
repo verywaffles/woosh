@@ -2286,6 +2286,57 @@ color: "#111111",
   };
 
   const renderPage = () => {
+    if (activePage === "Minigames") {
+      return (
+        <section className="minigames-page">
+          <div className="minigames-header">
+            <div>
+              <p className="minigames-eyebrow">WOOSH ARCADE</p>
+              <h1>Someone Stole My Beans</h1>
+              <p className="minigames-description">
+                The beans are missing. Jump in and play.
+              </p>
+            </div>
+            <a
+              className="minigames-open-link"
+              href="https://someone-stole-my-beans.web.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open game in new tab <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div className="minigames-game-shell">
+            <div className="minigames-game-topbar">
+              <span className="minigames-game-dot" aria-hidden="true" />
+              <span>Someone Stole My Beans</span>
+              <a
+                href="https://someone-stole-my-beans.web.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open separately
+              </a>
+            </div>
+            <iframe
+              className="minigames-iframe"
+              src="https://someone-stole-my-beans.web.app/"
+              title="Someone Stole My Beans game"
+              loading="lazy"
+              allow="fullscreen; gamepad"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </div>
+          <p className="minigames-note">
+            If the game does not appear here, use “Open game in new tab.”
+            Some sites block being embedded inside another website.
+          </p>
+        </section>
+      );
+    }
+
     if (activePage === "Blabbers") {
       return <Blabbers loggedInUser={loggedInUser} onLogin={() => setAuthPage("login")} />;
     }
@@ -2625,6 +2676,7 @@ color: "#111111",
               { page: "Wooshies", label: "Wooshies", symbol: "video" },
               { page: "Blabbers", label: "Blabbers", symbol: "voice" },
               { page: "Community", label: "Messages", symbol: "messages" },
+              { page: "Minigames", label: "Minigames", symbol: "game" },
               { page: "Account", label: "Account", symbol: "account" },
             ].map(({ page, label, symbol }) => (
               <button
@@ -2676,6 +2728,14 @@ color: "#111111",
                     <>
                       <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h8A2.5 2.5 0 0 1 17 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-4 3v-3.3a2.4 2.4 0 0 1-1-2z" />
                       <path d="M9 15h5.5a2.5 2.5 0 0 0 2.5-2.5V9h1.5A2.5 2.5 0 0 1 21 11.5v5a2.5 2.5 0 0 1-2.5 2.5H16l-3.5 2v-2H11A2 2 0 0 1 9 17z" />
+                    </>
+                  )}
+                  {symbol === "game" && (
+                    <>
+                      <rect x="3" y="6" width="18" height="12" rx="3" />
+                      <path d="M7 12h4M9 10v4" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                      <circle cx="16" cy="11" r="1" />
+                      <circle cx="18" cy="14" r="1" />
                     </>
                   )}
                   {symbol === "account" && (
