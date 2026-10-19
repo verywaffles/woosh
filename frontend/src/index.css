@@ -467,15 +467,12 @@ nav {
 }
 
 /*
-   Tiny feed avatar.
-
-   This is intentionally much smaller than the
-   profile-page avatar.
+   Feed avatar displayed next to each post.
 */
 
 .woosh-user .avatar {
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
 
   flex-shrink: 0;
 
