@@ -45,7 +45,8 @@ function authenticateToken(req, res, next) {
           username,
           display_name,
           bio,
-          profile_picture
+          profile_picture,
+          profile_banner
         FROM users
         WHERE id = ?
       `)
@@ -63,6 +64,7 @@ function authenticateToken(req, res, next) {
       displayName: user.display_name,
       bio: user.bio || "",
       profilePicture: user.profile_picture || null,
+      profileBanner: user.profile_banner || null,
     };
 
     next();
@@ -289,6 +291,7 @@ app.get("/api/auth/me", authenticateToken, (req, res) => {
       displayName: req.user.displayName,
       bio: req.user.bio,
       profilePicture: req.user.profilePicture,
+      profileBanner: req.user.profileBanner,
     },
   });
 });
@@ -309,6 +312,7 @@ app.get("/api/users/:username", (req, res) => {
           display_name,
           bio,
           profile_picture,
+          profile_banner,
           created_at
         FROM users
         WHERE username = ? COLLATE NOCASE
@@ -346,6 +350,7 @@ app.get("/api/users/:username", (req, res) => {
         displayName: user.display_name,
         bio: user.bio || "",
         profilePicture: user.profile_picture || null,
+        profileBanner: user.profile_banner || null,
         createdAt: user.created_at,
       },
       wooshes: posts,
@@ -368,27 +373,24 @@ app.get("/api/users/:username", (req, res) => {
 
 app.patch("/api/profile", authenticateToken, (req, res) => {
   try {
-    const { displayName, bio } = req.body;
+    const { displayName, bio, profilePicture, profileBanner } = req.body;
 
     const currentUser = db
       .prepare(`
-        SELECT display_name, bio
+        SELECT display_name, bio, profile_picture, profile_banner
         FROM users
         WHERE id = ?
       `)
       .get(req.user.userId);
 
     if (!currentUser) {
-      return res.status(404).json({
-        error: "User not found.",
-      });
+      return res.status(404).json({ error: "User not found." });
     }
 
     const newDisplayName =
       typeof displayName === "string"
         ? displayName.trim()
         : currentUser.display_name || "";
-
     const newBio =
       typeof bio === "string"
         ? bio.trim()
@@ -399,11 +401,42 @@ app.patch("/api/profile", authenticateToken, (req, res) => {
         error: "Display name must be 50 characters or less.",
       });
     }
-
     if (newBio.length > 160) {
       return res.status(400).json({
         error: "Bio must be 160 characters or less.",
       });
+    }
+
+    const normalizeImage = (value, currentValue, maxLength, label) => {
+      if (value === undefined) return currentValue || null;
+      if (value === null || value === "") return null;
+      if (typeof value !== "string" ||
+          !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/.test(value)) {
+        throw new Error(`${label} must be a valid JPEG, PNG, or WebP image.`);
+      }
+      if (value.length > maxLength) {
+        throw new Error(`${label} is too large. Choose a smaller image.`);
+      }
+      return value;
+    };
+
+    let newProfilePicture;
+    let newProfileBanner;
+    try {
+      newProfilePicture = normalizeImage(
+        profilePicture,
+        currentUser.profile_picture,
+        1500000,
+        "Profile picture"
+      );
+      newProfileBanner = normalizeImage(
+        profileBanner,
+        currentUser.profile_banner,
+        3000000,
+        "Profile banner"
+      );
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
 
     db.prepare(`
@@ -411,11 +444,14 @@ app.patch("/api/profile", authenticateToken, (req, res) => {
       SET
         display_name = ?,
         bio = ?,
-        profile_picture = NULL
+        profile_picture = ?,
+        profile_banner = ?
       WHERE id = ?
     `).run(
       newDisplayName,
       newBio,
+      newProfilePicture,
+      newProfileBanner,
       req.user.userId
     );
 
@@ -425,7 +461,9 @@ app.patch("/api/profile", authenticateToken, (req, res) => {
           id,
           username,
           display_name,
-          bio
+          bio,
+          profile_picture,
+          profile_banner
         FROM users
         WHERE id = ?
       `)
@@ -438,14 +476,13 @@ app.patch("/api/profile", authenticateToken, (req, res) => {
         username: updatedUser.username,
         displayName: updatedUser.display_name,
         bio: updatedUser.bio || "",
+        profilePicture: updatedUser.profile_picture || null,
+        profileBanner: updatedUser.profile_banner || null,
       },
     });
   } catch (error) {
     console.error("Profile update error:", error);
-
-    res.status(500).json({
-      error: "Could not update profile.",
-    });
+    res.status(500).json({ error: "Could not update profile." });
   }
 });
 // ============================================================
