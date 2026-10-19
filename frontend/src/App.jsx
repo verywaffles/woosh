@@ -2438,10 +2438,60 @@ color: "#111111",
       setViewedWooshies((current) => { const next = new Set(current); next.delete(wooshie.id); return next; });
     }
   };
-
-  const renderPage = () => {
+      const renderPage = () => {
     if (activePage === "Explore") {
       return <Explore apiFetch={apiFetch} openProfile={openProfile} loggedInUser={loggedInUser} />;
+    }
+
+    if (activePage === "Minigames") {
+      return (
+        <section className="minigames-page">
+          <div className="minigames-header">
+            <div>
+              <p className="minigames-eyebrow">WOOSH ARCADE</p>
+              <h1>Someone Stole My Beans</h1>
+              <p className="minigames-description">
+                The beans are missing. Jump in and play.
+              </p>
+            </div>
+            <a
+              className="minigames-open-link"
+              href="https://someone-stole-my-beans.web.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open game in new tab <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div className="minigames-game-shell">
+            <div className="minigames-game-topbar">
+              <span className="minigames-game-dot" aria-hidden="true" />
+              <span>Someone Stole My Beans</span>
+              <a
+                href="https://someone-stole-my-beans.web.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open separately
+              </a>
+            </div>
+            <iframe
+              className="minigames-iframe"
+              src="https://someone-stole-my-beans.web.app/"
+              title="Someone Stole My Beans game"
+              loading="lazy"
+              allow="fullscreen; gamepad"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </div>
+          <p className="minigames-note">
+            If the game does not appear here, use “Open game in new tab.”
+            Some sites block being embedded inside another website.
+          </p>
+        </section>
+      );
     }
 
     if (activePage === "Blabbers") {
@@ -2818,197 +2868,156 @@ color: "#111111",
     );
   }
 
-  // ============================================================
-  // MAIN APP
-  // ============================================================
 
+  // MAIN APP RESTORED
   return (
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <img
-            src={wooshIcon}
-            alt="Woosh"
-            className="brand-icon"
-          />
-
-          <span className="brand-name">
-            woosh
-          </span>
+          <img src={wooshIcon} alt="Woosh" className="brand-icon" />
+          <span className="brand-name">woosh</span>
         </div>
-
-        <button
-          type="button"
-          className="mobile-menu-toggle"
+        <button type="button" className="mobile-menu-toggle"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileMenuOpen}
           aria-controls="woosh-mobile-navigation"
-          onClick={() => setMobileMenuOpen((open) => !open)}
-        >
+          onClick={() => setMobileMenuOpen(open => !open)}>
           {mobileMenuOpen ? (
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
           ) : (
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
           )}
         </button>
-
         <div className="auth-buttons">
-          {loggedInUser ? (
-            <>
-              <button
-                className="logged-in-name-button"
-                onClick={() =>
-                  openProfile(loggedInUser)
-                }
-              >
-                @{loggedInUser}
-              </button>
-
-              <button onClick={handleLogout}>
-                Log out
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() =>
-                  setAuthPage("login")
-                }
-              >
-                Log in
-              </button>
-
-              <button
-                className="create-account"
-                onClick={() =>
-                  setAuthPage("create")
-                }
-              >
-                Create account
-              </button>
-            </>
-          )}
+          {loggedInUser ? <>
+            <button className="logged-in-name-button" onClick={() => openProfile(loggedInUser)}>@{loggedInUser}</button>
+            <button onClick={handleLogout}>Log out</button>
+          </> : <>
+            <button onClick={() => setAuthPage("login")}>Log in</button>
+            <button className="create-account" onClick={() => setAuthPage("create")}>Create account</button>
+          </>}
         </div>
       </header>
-
-      {mobileMenuOpen && (
-        <button
-          type="button"
-          className="mobile-menu-overlay"
-          aria-label="Close navigation menu"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
+      {mobileMenuOpen && <button type="button" className="mobile-menu-overlay"
+        aria-label="Close navigation menu" onClick={() => setMobileMenuOpen(false)} />}
       <div className="layout">
-        <aside
-  id="woosh-mobile-navigation"
-  className={`sidebar ${mobileMenuOpen ? "mobile-menu-open" : ""}`}
->
+        <aside id="woosh-mobile-navigation"
+          className={`sidebar ${mobileMenuOpen ? "mobile-menu-open" : ""}`}>
           <nav>
             {[
-              "Wooshes",
-              "Explore",
-              "Wooshies",
-              "Blabbers",
-              "Community",
-              "Notifications",
-              "Account",
-              "Settings",
-            ].map((page) => (
+              { page: "Wooshes", label: "Wooshes", symbol: "feed" },
+              { page: "Explore", label: "Explore", symbol: "explore" },
+              { page: "Wooshies", label: "Wooshies", symbol: "video" },
+              { page: "Blabbers", label: "Blabbers", symbol: "voice" },
+              { page: "Community", label: "Messages", symbol: "messages" },
+              { page: "Minigames", label: "Minigames", symbol: "game" },
+              { page: "Notifications", label: "Notifications", symbol: "notifications" },
+              { page: "Account", label: "Account", symbol: "account" },
+              { page: "Settings", label: "Settings", symbol: "settings" },
+            ].map(({ page, label, symbol }) => (
               <button
                 key={page}
-                className={`nav-button ${
-                  activePage === page
-                    ? "active"
-                    : ""
-                }`}
+                type="button"
+                className={`nav-button ${activePage === page ? "active" : ""}`}
                 onClick={() => {
-                  if (
-                    page === "Account" &&
-                    loggedInUser
-                  ) {
+                  if (page === "Account" && loggedInUser) {
                     openProfile(loggedInUser);
+                    setMobileMenuOpen(false);
                     return;
                   }
 
                   setActivePage(page);
                   setMobileMenuOpen(false);
 
-        if (page === "Community") {
-          setActiveConversation(null);
-          setMessages([]);
-          setActiveGroup(null);
-          setGroupMessages([]);
-          setShowGroupSettings(false);
-          loadConversations();
-          loadGroups();
-        }
-      }}
-    >
-      <svg
-  className="nav-symbol"
-  viewBox="0 0 24 24"
-  aria-hidden="true"
-  focusable="false"
->
-  {page === "Wooshes" && (
-    <>
-      <rect x="3.5" y="4" width="17" height="4" rx="1.5" />
-      <rect x="3.5" y="10" width="17" height="4" rx="1.5" />
-      <rect x="3.5" y="16" width="11" height="4" rx="1.5" />
-    </>
-  )}
-  {page === "Explore" && (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="m15.5 8.5-2 5-5 2 2-5z" />
-    </>
-  )}
-  {page === "Wooshies" && (
-    <>
-      <circle cx="9" cy="8" r="3" />
-      <circle cx="17" cy="9" r="2.5" />
-      <path d="M3 20a6 6 0 0 1 12 0M14 15a5 5 0 0 1 7 5" />
-    </>
-  )}
-  {page === "Blabbers" && (
-    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5a2.5 2.5 0 0 1-1-2z" />
-  )}
-  {page === "Community" && (
-    <>
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h8A2.5 2.5 0 0 1 17 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-4 3v-3.3a2.4 2.4 0 0 1-1-2z" />
-      <path d="M9 15h5.5a2.5 2.5 0 0 0 2.5-2.5V9h1.5A2.5 2.5 0 0 1 21 11.5v5a2.5 2.5 0 0 1-2.5 2.5H16l-3.5 2v-2H11A2 2 0 0 1 9 17z" />
-    </>
-  )}
-  {page === "Notifications" && (
-    <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
-  )}
-  {page === "Account" && (
-    <>
-      <circle cx="12" cy="8" r="3.3" />
-      <path d="M4.5 20a7.5 7.5 0 0 1 15 0z" />
-    </>
-  )}
-  {page === "Settings" && (
-    <>
-      <circle cx="12" cy="12" r="3" />
-      <path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.8 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.8-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.8-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.8 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2z" transform="translate(-1 -1)" />
-    </>
-  )}
-</svg>
+                  if (page === "Community") {
+                    setActiveConversation(null);
+                    setMessages([]);
+                    setActiveGroup(null);
+                    setGroupMessages([]);
+                    setShowGroupSettings(false);
+                    loadConversations();
+                    loadGroups();
+                  }
+                }}
+              >
+                <svg
+                  className="nav-symbol"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  {symbol === "feed" && (
+                    <>
+                      <rect x="3.5" y="4" width="17" height="4" rx="1.5" />
+                      <rect x="3.5" y="10" width="17" height="4" rx="1.5" />
+                      <rect x="3.5" y="16" width="11" height="4" rx="1.5" />
+                    </>
+                  )}
+                  {symbol === "explore" && (
+                    <>
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="m15.5 8.5-2 5-5 2 2-5z" />
+                    </>
+                  )}
+                  {symbol === "video" && (
+                    <>
+                      <rect x="3" y="4.5" width="18" height="15" rx="3" />
+                      <path className="nav-symbol-cutout" d="M10 8.5 16 12l-6 3.5z" />
+                    </>
+                  )}
+                  {symbol === "voice" && (
+                    <path
+                      d="M3 13h3l2-6 3 11 3-14 3 9h4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
+                  {symbol === "messages" && (
+                    <>
+                      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h8A2.5 2.5 0 0 1 17 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-4 3v-3.3a2.4 2.4 0 0 1-1-2z" />
+                      <path d="M9 15h5.5a2.5 2.5 0 0 0 2.5-2.5V9h1.5A2.5 2.5 0 0 1 21 11.5v5a2.5 2.5 0 0 1-2.5 2.5H16l-3.5 2v-2H11A2 2 0 0 1 9 17z" />
+                    </>
+                  )}
+                  {symbol === "game" && (
+                    <>
+                      <rect x="3" y="6" width="18" height="12" rx="3" />
+                      <path d="M7 12h4M9 10v4" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                      <circle cx="16" cy="11" r="1" />
+                      <circle cx="18" cy="14" r="1" />
+                    </>
+                  )}
+                  {symbol === "notifications" && (
+                    <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+                  )}
+                  {symbol === "account" && (
+                    <>
+                      <circle cx="12" cy="8" r="3.3" />
+                      <path d="M4.5 20a7.5 7.5 0 0 1 15 0z" />
+                    </>
+                  )}
+                  {symbol === "settings" && (
+                    <>
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.8 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.8-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.8-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.8 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2z" />
+                    </>
+                  )}
+                </svg>
 
-      <span className="nav-label">{page}</span>
+                <span className="nav-label">{label}</span>
 
-      {page === "Notifications" && unreadNotificationCount > 0 && (
-        <span className="nav-notification-count">
-          {unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}
-        </span>
-      )}
-    </button>
-  ))}
-</nav>
-
+                {page === "Notifications" && unreadNotificationCount > 0 && (
+                  <span className="nav-notification-count">
+                    {unreadNotificationCount > 99
+                      ? "99+"
+                      : unreadNotificationCount}
+                  </span>
+                )}
+              </button>
+            ))}
+          </nav>
         </aside>
 
         <main className="main-content">
