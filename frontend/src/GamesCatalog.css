@@ -1,14 +1,113 @@
-.arcade-catalog{max-width:1100px;margin:0 auto}.arcade-game-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}.arcade-game-option{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:130px;padding:16px;text-align:left;color:inherit;background:var(--card,#fff);border:1px solid var(--border,#e5e7eb);border-radius:14px;cursor:pointer}.arcade-game-option strong{font-size:16px}.arcade-game-option>span:last-child{color:var(--muted,#6b7280);font-size:13px;line-height:1.45}.arcade-game-option.selected{border-color:var(--accent,#4f46e5);box-shadow:0 0 0 1px var(--accent,#4f46e5)}.arcade-game-category,.arcade-eyebrow{margin:0;color:var(--muted,#6b7280);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.arcade-stage{overflow:hidden}.arcade-play-area{min-height:400px;padding:24px;background:var(--surface,#f8fafc)}.arcade-game{width:min(100%,430px);margin:0 auto;display:flex;flex-direction:column;align-items:stretch;gap:14px}.arcade-game-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.arcade-game-heading h2{margin:4px 0 0;font-size:24px}.arcade-score{padding:7px 10px;border-radius:9px;background:var(--card,#fff);border:1px solid var(--border,#e5e7eb);font-size:13px;font-weight:650;white-space:nowrap}.arcade-help{margin:0;color:var(--muted,#6b7280);font-size:14px}.board-2048{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px;background:#a9a096;border-radius:12px}.tile-2048{aspect-ratio:1;display:grid;place-items:center;border-radius:7px;background:#eee4da;color:#544c43;font-size:clamp(17px,4vw,28px);font-weight:750}.tile-empty{background:#d4ccc2}.tile-4{background:#ede0c8}.tile-8{background:#f2b179;color:#fff}.tile-16{background:#f59563;color:#fff}.tile-32{background:#f67c5f;color:#fff}.tile-64{background:#f65e3b;color:#fff}.tile-128,.tile-256,.tile-512,.tile-1024,.tile-2048{background:#edcf72;color:#fff;font-size:clamp(14px,3vw,24px)}.game-controls{display:flex;flex-direction:column;align-items:center;gap:8px}.game-controls>div{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.game-controls button,.arcade-secondary{padding:9px 13px;border:1px solid var(--border,#d1d5db);border-radius:9px;background:var(--card,#fff);color:inherit;cursor:pointer;font-weight:600}.arcade-secondary{align-self:center}.memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.memory-card{aspect-ratio:1;border:1px solid var(--border,#d1d5db);border-radius:10px;background:#e9eafc;color:#34336f;font-size:26px;font-weight:750;cursor:pointer}.memory-card.revealed{background:var(--card,#fff)}.memory-card.matched{background:#d9fbe7;border-color:#86d5a5}.arcade-win{text-align:center;font-weight:700}.tic-board{width:min(100%,320px);align-self:center;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tic-board button{aspect-ratio:1;border:1px solid var(--border,#d1d5db);border-radius:12px;background:var(--card,#fff);color:inherit;font-size:38px;font-weight:700;cursor:pointer}@media(max-width:850px){.arcade-game-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.arcade-play-area{padding:14px}.arcade-game-option{padding:12px;min-height:120px}}
-
-.race-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));height:260px;overflow:hidden;border:3px solid #334155;border-radius:12px;background:repeating-linear-gradient(to bottom,#475569 0,#475569 36px,#64748b 37px,#64748b 39px);gap:0}
-.race-lane{display:flex;flex-direction:column;justify-content:space-around;align-items:center;border-right:2px dashed rgba(255,255,255,.7);font-size:28px}
-.race-lane:last-child{border-right:0}
-.sports-court{height:180px;border-radius:14px;display:flex;align-items:center;justify-content:space-around;border:3px solid rgba(255,255,255,.65);font-size:58px}
-.basketball-court{background:linear-gradient(135deg,#c47b3e,#9b5427);position:relative;flex-direction:column}
-.basketball-hoop{color:#fff;font-size:64px;text-shadow:0 2px 0 #333}
-.basketball-ball{font-size:36px;color:#ff8a25;text-shadow:0 1px 2px #4b2411}
-.soccer-goal{background:linear-gradient(#87ceeb 0 58%,#27864a 58%);position:relative}
-.soccer-goal span:first-child{font-size:72px;text-shadow:0 2px 0 #fff}
-.soccer-goal span:last-child{font-size:42px}
-.sports-primary{padding:12px 18px;border:0;border-radius:10px;background:var(--accent,#4f46e5);color:white;font-weight:700;cursor:pointer}
-@media(max-width:480px){.race-track{height:210px}.sports-court{height:150px}}
+.arcade-catalog{--arcade-ink:#15171c;--arcade-muted:#777d88;--arcade-line:#e5e7eb;--arcade-paper:#fff;max-width:1100px;margin:0 auto;color:var(--arcade-ink)}
+.arcade-catalog .minigames-header{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:24px}
+.arcade-catalog .minigames-header h1{font-size:clamp(30px,4vw,40px);letter-spacing:-1.5px;margin:5px 0 8px}
+.arcade-catalog .minigames-eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#777d88}
+.arcade-catalog .minigames-description{font-size:14px;line-height:1.55;color:#777d88}
+.arcade-live-label{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #e5e7eb;border-radius:999px;font-size:11px;letter-spacing:.08em;font-weight:800;white-space:nowrap}
+.arcade-live-label i,.minigames-game-dot{width:7px;height:7px;border-radius:50%;background:#26a269;box-shadow:0 0 0 3px #e2f7ec;display:inline-block}
+.arcade-game-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0 22px}
+.arcade-game-option{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:10px;min-height:164px;padding:15px;text-align:left;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:15px;cursor:pointer;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.arcade-game-option:hover{transform:translateY(-2px);border-color:#bfc3cb;box-shadow:0 8px 22px #1111110a}
+.arcade-game-option strong{font-size:15px;letter-spacing:-.25px;line-height:1.25}
+.arcade-game-option>span:nth-last-child(2){color:#777d88;font-size:12px;line-height:1.45}
+.arcade-game-option.selected{border-color:#202329;box-shadow:inset 0 0 0 1px #202329,0 8px 24px #1111110a}
+.game-option-top{display:flex;align-items:center;justify-content:space-between}
+.arcade-game-category,.arcade-eyebrow{margin:0;color:#777d88;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.game-option-number{color:#c1c5cc;font-size:11px;font-variant-numeric:tabular-nums;font-weight:750}
+.game-option-launch{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;border-top:1px solid #f0f1f3;color:#8a8f99;font-size:9px;letter-spacing:.1em;font-weight:800}
+.game-option-launch b{font-size:14px;color:#30343b}
+.arcade-game-option.selected .game-option-launch{color:#222}
+.arcade-stage{overflow:hidden;border:1px solid #e4e6ea;border-radius:17px;background:#fff;box-shadow:0 14px 40px #15171c08}
+.minigames-game-topbar{min-height:48px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid #e9eaed;background:#fff;font-size:12px;font-weight:750}
+.game-stage-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.game-stage-status{margin-left:auto;color:#888e98;font-size:9px;letter-spacing:.13em;font-weight:800}
+.minigames-game-topbar a{margin-left:8px;color:#666d77;font-size:11px;text-decoration:none;white-space:nowrap}
+.minigames-game-topbar a:hover{color:#111;text-decoration:underline}
+.arcade-play-area{min-height:430px;padding:28px;background:radial-gradient(ellipse at 50% 0%,#f4f5f7 0,#fafafa 48%,#f5f6f7 100%)}
+.arcade-game{width:min(100%,440px);margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.arcade-game-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.arcade-game-heading h2{margin:4px 0 0;font-size:25px;letter-spacing:-.9px}
+.arcade-score{padding:8px 11px;border-radius:10px;background:#fff;border:1px solid #e2e4e8;font-size:11px;font-weight:800;white-space:nowrap}
+.score-pair{display:flex;gap:7px}
+.score-pair>span{display:flex;flex-direction:column;gap:3px;min-width:63px;padding:7px 9px;border:1px solid #e2e4e8;border-radius:10px;background:#fff}
+.score-pair small{color:#8b9099;font-size:8px;letter-spacing:.1em;font-weight:800}
+.score-pair strong{font-size:15px;font-variant-numeric:tabular-nums}
+.arcade-help{margin:0;color:#747a85;font-size:13px;line-height:1.55}
+.board-2048{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:9px;background:#a9a39b;border-radius:14px;box-shadow:0 7px 18px #39332b1a}
+.tile-2048{aspect-ratio:1;display:grid;place-items:center;border-radius:8px;background:#eee8df;color:#554d44;font-size:clamp(17px,4vw,29px);font-weight:800;font-variant-numeric:tabular-nums;transition:background .12s ease,transform .12s ease}
+.tile-empty{background:#d6d0c8}.tile-4{background:#ede0c8}.tile-8{background:#f2b179;color:#fff}.tile-16{background:#f59563;color:#fff}.tile-32{background:#f67c5f;color:#fff}.tile-64{background:#f65e3b;color:#fff}.tile-128,.tile-256,.tile-512,.tile-1024,.tile-2048{background:#edcf72;color:#fff;font-size:clamp(14px,3.2vw,24px)}.tile-2048{box-shadow:inset 0 0 0 2px #fff8}
+.game-controls{display:flex;flex-direction:column;align-items:center;gap:8px}
+.game-controls>div{display:flex;justify-content:center;gap:8px}
+.game-controls button,.arcade-secondary,.game-banner button{padding:10px 14px;border:1px solid #dfe2e7;border-radius:10px;background:#fff;color:#202329;cursor:pointer;font-size:12px;font-weight:750;transition:background .15s ease,transform .15s ease,border-color .15s ease}
+.game-controls button:hover,.arcade-secondary:hover,.game-banner button:hover{background:#f2f3f5;border-color:#cbd0d7}
+.game-controls button:active,.sports-primary:active,.steering-controls button:active{transform:scale(.97)}
+.arcade-secondary{align-self:center}
+.game-banner{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:13px 15px;border:1px solid #d9e9df;border-radius:12px;background:#f3fbf6}
+.game-banner strong{font-size:13px}.game-banner span{font-size:12px;color:#66736b;line-height:1.45}.game-banner button{margin-top:5px}
+.memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.memory-card{aspect-ratio:1;border:1px solid #dce0e8;border-radius:12px;background:linear-gradient(145deg,#242934,#14171d);color:#fff;font-size:25px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #0f1116;transition:transform .15s ease,background .15s ease}
+.memory-card:hover:not(:disabled){transform:translateY(-2px)}
+.memory-card-mark{display:grid;place-items:center;width:34px;height:34px;margin:auto;border:1px solid #555d6c;border-radius:50%;color:#bfc7d5;font-size:14px}
+.memory-card.revealed{background:#fff;color:#242934;box-shadow:0 3px 0 #e0e3e8}
+.memory-card.matched{background:#e8f7ee;border-color:#98d5ae;color:#1e7a46;box-shadow:0 3px 0 #b4e5c5}
+.memory-card:disabled{cursor:default}
+.tic-board{width:min(100%,320px);align-self:center;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tic-board button{aspect-ratio:1;border:1px solid #e0e3e8;border-radius:13px;background:#fff;color:#222831;font-size:42px;font-weight:750;cursor:pointer;box-shadow:0 3px 0 #e4e6ea;transition:background .15s ease,transform .15s ease}
+.tic-board button:disabled{cursor:default}.tic-board button:not(:disabled):hover{background:#f2f4f7;transform:translateY(-1px)}
+.tic-board .mark-x{color:#3f5fdb}.tic-board .mark-o{color:#d06b42}
+.game-mode-switch{display:flex;gap:4px;padding:4px;border:1px solid #e4e6ea;border-radius:11px;background:#f0f1f3}
+.game-mode-switch button{flex:1;padding:9px;border-radius:8px;color:#6c727c;font-size:12px;font-weight:750}
+.game-mode-switch button.active{background:#fff;color:#1c2027;box-shadow:0 1px 4px #11111110}
+.arcade-racing{width:min(100%,500px)}
+.race-scene{position:relative;overflow:hidden;border:1px solid #252d3a;border-radius:15px;background:#101720}
+.race-skyline{position:absolute;inset:0 0 auto;height:23%;display:flex;align-items:flex-end;justify-content:space-around;padding:0 8px;background:linear-gradient(#152334,#354456);opacity:.9}
+.race-skyline span{width:12%;height:55%;background:#202c3c;border-radius:3px 3px 0 0}.race-skyline span:nth-child(2){height:85%}.race-skyline span:nth-child(3){height:66%}.race-skyline span:nth-child(4){height:100%}.race-skyline span:nth-child(5){height:72%}
+.race-road{position:relative;display:grid;grid-template-columns:repeat(3,1fr);height:360px;margin-top:38px;overflow:hidden;background:linear-gradient(90deg,#303944,#3d4652 49%,#303944);border-top:3px solid #f2c96b}
+.race-lane{position:relative;overflow:hidden;border-right:2px dashed #c8ced65c}.race-lane:last-child{border-right:0}
+.lane-dashes{position:absolute;inset:-40px 50% 0 auto;width:3px;transform:translateX(50%);background:repeating-linear-gradient(to bottom,#f2f4f780 0 28px,transparent 28px 58px);animation:road-scroll .42s linear infinite}
+@keyframes road-scroll{to{background-position:0 58px}}
+.traffic-car,.player-car{position:absolute;z-index:2;left:50%;width:42px;height:66px;transform:translateX(-50%);border:2px solid #ffffff70;border-radius:12px 12px 8px 8px;background:linear-gradient(90deg,#c93e43,#ef6869 48%,#b92e38);box-shadow:0 5px 10px #0005}
+.traffic-car:before,.player-car:before{content:"";position:absolute;left:7px;right:7px;top:10px;height:19px;border-radius:5px 5px 3px 3px;background:linear-gradient(#c7e4ef,#6e8e9d);border:1px solid #ffffff60}
+.traffic-car:after,.player-car:after{content:"";position:absolute;left:-4px;right:-4px;bottom:8px;height:9px;border-radius:3px;background:linear-gradient(90deg,#15191f 0 15%,transparent 15% 85%,#15191f 85%)}
+.traffic-car{transition:top .45s linear}.traffic-car.truck{width:48px;height:75px;background:linear-gradient(90deg,#c38a35,#edc56b 48%,#a96b22)}.traffic-car.truck:before{height:26px}
+.player-car{bottom:16px;background:linear-gradient(90deg,#176fc6,#51a9ff 48%,#145ca8);box-shadow:0 0 0 2px #9bd2ff44,0 8px 16px #0007}
+.player-car:before{background:linear-gradient(#d8f2ff,#6097b7)}
+.player-car span,.player-car i{position:absolute;bottom:5px;width:7px;height:5px;background:#fff0b7;box-shadow:0 0 8px #fff4a9}.player-car span{left:5px}.player-car i{right:5px}
+.race-dashboard{display:flex;justify-content:space-between;padding:10px 13px;background:#111821;color:#b8c3d2;font-size:9px;font-weight:800;letter-spacing:.13em}
+.steering-controls{display:flex;align-items:center;justify-content:center;gap:18px}.steering-controls>button:not(.sports-primary){width:44px;height:42px;border:1px solid #dfe2e7;border-radius:10px;background:#fff;font-size:20px;font-weight:800}.steering-controls span{color:#8a909a;font-size:10px;font-weight:800;letter-spacing:.15em}
+.sports-primary{padding:12px 18px;border:0;border-radius:10px;background:#20252d;color:#fff;font-size:12px;font-weight:800;cursor:pointer;transition:background .15s ease,transform .15s ease}.sports-primary:hover{background:#3a424e}
+.basketball-scene{position:relative;height:220px;overflow:hidden;border:1px solid #b66e3c;border-radius:14px;background:linear-gradient(#263e56 0 38%,#d98e4e 38%,#b76b35 100%);perspective:400px}
+.court-lines{position:absolute;inset:42% -15% -30%;border:2px solid #f8d7a9;border-radius:50% 50% 0 0;transform:perspective(180px) rotateX(12deg)}
+.hoop-backboard{position:absolute;top:20px;left:50%;width:88px;height:58px;transform:translateX(-50%);border:5px solid #f3f5f7;border-radius:4px;background:#d6e6efb8;box-shadow:0 3px 0 #25313b}
+.hoop-rim{position:absolute;top:73px;left:50%;width:62px;height:13px;transform:translateX(-50%);border:4px solid #f26b32;border-top:0;border-radius:0 0 50% 50%;filter:drop-shadow(0 2px 1px #5b2d19)}
+.hoop-net{position:absolute;top:82px;left:50%;width:43px;height:33px;transform:translateX(-50%);border:1px solid #fff9;border-top:0;background:repeating-linear-gradient(75deg,transparent 0 7px,#fff9 7px 8px,transparent 8px 14px)}
+.basketball-ball{position:absolute;left:50%;bottom:24px;width:34px;height:34px;transform:translateX(-50%);border:2px solid #7e3c18;border-radius:50%;background:radial-gradient(circle at 30% 25%,#ffbd64,#e66b20 70%);box-shadow:0 5px 8px #50250d66}
+.basketball-ball:before,.basketball-ball:after{content:"";position:absolute;inset:0;border:1px solid #783a1b;border-radius:50%}.basketball-ball:before{left:9px;right:9px}.basketball-ball:after{top:15px;bottom:15px;left:-1px;right:-1px;border-left:0;border-right:0}
+.basketball-ball.made{animation:shot-made .55s ease-out forwards}.basketball-ball.missed{animation:shot-missed .55s ease-out forwards}
+@keyframes shot-made{to{bottom:115px;transform:translateX(-50%) scale(.45);opacity:.3}}
+@keyframes shot-missed{50%{bottom:125px;transform:translateX(-50%) translateX(45px) rotate(100deg)}to{bottom:22px;transform:translateX(-50%) rotate(180deg)}}
+.court-label{position:absolute;bottom:7px;left:0;right:0;text-align:center;color:#ffedda8c;font-size:9px;letter-spacing:.2em;font-weight:800}
+.shot-meter{display:flex;flex-direction:column;gap:7px}
+.shot-meter-track{position:relative;height:15px;border-radius:999px;background:linear-gradient(90deg,#e9a7a0,#f3d18b 52%,#8fcda8);border:1px solid #ffffff;box-shadow:inset 0 1px 3px #0002}
+.shot-zone{position:absolute;left:58%;width:24%;top:-3px;bottom:-3px;border:2px solid #2f8d57;border-radius:999px;background:#40ae7044}
+.shot-pointer{position:absolute;top:-5px;width:5px;height:23px;border-radius:4px;background:#20252d;box-shadow:0 0 0 2px #fff;transform:translateX(-50%);transition:left .025s linear}
+.shot-meter-labels{display:flex;justify-content:space-between;color:#969ba3;font-size:8px;letter-spacing:.08em;font-weight:800}
+.soccer-scene{position:relative;height:245px;overflow:hidden;border:1px solid #1c563d;border-radius:14px;background:linear-gradient(#1c2f4b 0 40%,#235c41 40%,#318352 100%)}
+.stadium-lights{position:absolute;top:8px;left:8%;right:8%;display:flex;justify-content:space-between}.stadium-lights i{width:24px;height:5px;border-radius:9px;background:#fff4d6;box-shadow:0 0 14px 4px #fff6c955}
+.soccer-crowd{position:absolute;top:36px;left:0;right:0;height:38px;background:radial-gradient(circle,#d2d7de 0 2px,transparent 3px) 0 0/13px 12px,radial-gradient(circle,#a9b3c2 0 2px,transparent 3px) 6px 5px/13px 12px;opacity:.55}
+.soccer-goal-frame{position:absolute;top:55px;left:16%;right:16%;height:125px;border:7px solid #f6f7f9;border-bottom:0;border-radius:4px 4px 0 0;box-shadow:0 0 0 2px #17212b88}
+.goal-net{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#fff8 0 1px,transparent 1px 17px),repeating-linear-gradient(0deg,#fff8 0 1px,transparent 1px 15px);background-color:#e8f1ed18}
+.keeper{position:absolute;z-index:2;bottom:3px;width:44px;height:83px;transform:translateX(-50%);transition:left .25s ease;left:50%}.keeper:before{content:"";position:absolute;top:0;left:50%;width:22px;height:22px;transform:translateX(-50%);border-radius:50%;background:#dca879;border:2px solid #47372e}.keeper span{position:absolute;top:22px;left:50%;width:25px;height:35px;transform:translateX(-50%);border-radius:7px;background:#f0c84e;border:2px solid #fff4}.keeper i,.keeper b{position:absolute;top:28px;width:14px;height:29px;border-radius:8px;background:#dca879;border:2px solid #f5e4ce}.keeper i{left:-1px;transform:rotate(-35deg)}.keeper b{right:-1px;transform:rotate(35deg)}.keeper-left{left:20%}.keeper-center{left:50%}.keeper-right{left:80%}
+.soccer-ball-in-net{position:absolute;z-index:3;top:52%;width:18px;height:18px;transform:translate(-50%,-50%);border:2px solid #26313a;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#d9e0e5);box-shadow:0 2px 5px #0006}.soccer-ball-in-net.goal{animation:ball-goal .45s ease-out}.soccer-ball-in-net.saved{top:72%;opacity:.65}
+@keyframes ball-goal{to{top:80%;transform:translate(-50%,-50%) scale(.65)}}
+.penalty-spot{position:absolute;bottom:37px;left:50%;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px #ffffff18}
+.pitch-stripe{position:absolute;bottom:-58px;left:50%;width:65%;height:95px;transform:translateX(-50%);border:2px solid #d6f0dc8a;border-radius:50% 50% 0 0}
+.shot-directions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.shot-directions button{padding:10px;border:1px solid #dfe2e7;border-radius:9px;background:#fff;color:#777d88;font-size:11px;font-weight:800}
+.shot-directions button.active{border-color:#252a32;background:#252a32;color:#fff}.shot-directions button:disabled{opacity:.6}
+.power-track .shot-zone{left:56%;width:24%}
+.minigames-note{margin:14px 2px 0;color:#898e97;font-size:11px;line-height:1.6}
+.minigames-iframe{display:block;width:100%;height:min(70vh,680px);min-height:480px;border:0;background:#fff}
+@media(max-width:850px){.arcade-game-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.arcade-play-area{padding:22px}}
+@media(max-width:520px){.arcade-catalog .minigames-header{align-items:flex-start}.arcade-live-label{padding:7px 9px;font-size:9px}.arcade-game-picker{gap:8px}.arcade-game-option{padding:12px;min-height:150px}.arcade-game-option strong{font-size:13px}.arcade-game-option>span:nth-last-child(2){font-size:11px}.arcade-play-area{padding:15px}.arcade-game-heading h2{font-size:21px}.score-pair>span{min-width:52px;padding:6px}.score-pair strong{font-size:13px}.race-road{height:310px}.traffic-car,.player-car{width:34px;height:57px}.traffic-car.truck{width:39px;height:65px}.basketball-scene{height:200px}.soccer-scene{height:220px}.minigames-iframe{min-height:420px}}
+@media(prefers-reduced-motion:reduce){.arcade-catalog *, .arcade-catalog *:before,.arcade-catalog *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
