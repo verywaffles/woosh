@@ -1058,7 +1058,7 @@ const leaveGroup = async () => {
     if (!query) return;
     setGifLoading((current) => ({ ...current, [wooshId]: true }));
     try {
-      const data = await apiFetch(\`/api/giphy/search?q=\${encodeURIComponent(query)}\`);
+      const data = await apiFetch(`/api/giphy/search?q=${encodeURIComponent(query)}`);
       setGifResults((current) => ({ ...current, [wooshId]: data.gifs || [] }));
     } catch (error) {
       alert(error.message || "GIF search is not available right now.");
@@ -1070,7 +1070,7 @@ const leaveGroup = async () => {
   const voteInPoll = async (wooshId, optionId) => {
     if (!loggedInUser) { setAuthPage("login"); return; }
     try {
-      await apiFetch(\`/api/wooshes/\${wooshId}/poll/vote\`, {
+      await apiFetch(`/api/wooshes/${wooshId}/poll/vote`, {
         method: "POST",
         body: JSON.stringify({ optionId }),
       });
@@ -1193,7 +1193,7 @@ const leaveGroup = async () => {
                 <button className="poll-option-button" onClick={() => voteInPoll(woosh.id, option.id)}>
                   <span>{option.text}</span><strong>{percent}%</strong>
                 </button>
-                <div className="poll-result-track"><span style={{ width: \`\${percent}%\` }} /></div>
+                <div className="poll-result-track"><span style={{ width: `${percent}%` }} /></div>
               </div>;
             })}
             <p className="poll-total">{woosh.poll.totalVotes} vote{woosh.poll.totalVotes === 1 ? "" : "s"} · one vote per account</p>
@@ -2831,7 +2831,7 @@ color: "#111111",
                 <label><input type="checkbox" checked={pollEnabled} onChange={(event) => setPollEnabled(event.target.checked)} /> Add a poll</label>
                 {pollEnabled && <>
                   <input className="poll-question-input" value={pollQuestion} onChange={(event) => setPollQuestion(event.target.value)} placeholder="Ask a question..." maxLength={240} />
-                  {pollOptions.map((option, index) => <input key={index} value={option} maxLength={100} placeholder={\`Option \${index + 1}\`} onChange={(event) => setPollOptions((current) => current.map((value, i) => i === index ? event.target.value : value))} />)}
+                  {pollOptions.map((option, index) => <input key={index} value={option} maxLength={100} placeholder={`Option ${index + 1}`} onChange={(event) => setPollOptions((current) => current.map((value, i) => i === index ? event.target.value : value))} />)}
                   {pollOptions.length < 4 && <button type="button" onClick={() => setPollOptions((current) => [...current, ""])}>Add option</button>}
                   {pollOptions.length > 2 && <button type="button" onClick={() => setPollOptions((current) => current.slice(0, -1))}>Remove option</button>}
                 </>}
