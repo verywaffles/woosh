@@ -6,6 +6,9 @@ const games = [
   { id: "2048", name: "2048", type: "Puzzle", detail: "Merge matching tiles to reach 2048." },
   { id: "memory", name: "Memory Match", type: "Puzzle", detail: "Find all six matching pairs." },
   { id: "tic", name: "Tic-Tac-Toe", type: "Classic", detail: "Get three in a row with a friend." },
+  { id: "racing", name: "Turbo Racing", type: "Racing", detail: "Dodge traffic and survive the track." },
+  { id: "basketball", name: "Hoop Shot", type: "Sports", detail: "Take shots and build your score." },
+  { id: "soccer", name: "Penalty Shootout", type: "Sports", detail: "Pick a corner and beat the keeper." },
 ];
 
 function initial2048() {
@@ -93,6 +96,71 @@ function TicTacToe() {
   </div>;
 }
 
+
+function RacingGame() {
+  const [lane, setLane] = useState(1);
+  const [distance, setDistance] = useState(0);
+  const [traffic, setTraffic] = useState([0, 2]);
+  const [crashed, setCrashed] = useState(false);
+  const move = (nextLane) => {
+    if (crashed) return;
+    const nextDistance = distance + 1;
+    const nextTraffic = traffic.map((v) => (v + 1) % 3);
+    setDistance(nextDistance);
+    setLane(nextLane);
+    setTraffic(nextTraffic);
+    if (nextTraffic.includes(nextLane)) setCrashed(true);
+  };
+  return <div className="arcade-game">
+    <div className="arcade-game-heading"><div><p className="arcade-eyebrow">RACING</p><h2>Turbo Racing</h2></div><span className="arcade-score">Distance {distance}</span></div>
+    <p className="arcade-help">Switch lanes to avoid traffic. Reach 20 distance to win.</p>
+    <div className="race-track">{[0,1,2].map((trackLane) => <div className="race-lane" key={trackLane}><span>{lane === trackLane ? "🚗" : ""}</span><span>{traffic.includes(trackLane) ? "🚧" : ""}</span></div>)}</div>
+    {crashed ? <p className="arcade-win">Crash! Try another run.</p> : distance >= 20 ? <p className="arcade-win">Finish line! You won!</p> : <div className="game-controls"><div><button onClick={() => move(Math.max(0,lane-1))}>← Left</button><button onClick={() => move(Math.min(2,lane+1))}>Right →</button></div></div>}
+    <button className="arcade-secondary" onClick={() => {setLane(1);setDistance(0);setTraffic([0,2]);setCrashed(false);}}>Restart race</button>
+  </div>;
+}
+
+function BasketballGame() {
+  const [score, setScore] = useState(0);
+  const [shots, setShots] = useState(0);
+  const [message, setMessage] = useState("Take 10 shots!");
+  const shoot = () => {
+    if (shots >= 10) return;
+    const made = Math.random() < 0.65;
+    setShots((n) => n + 1);
+    if (made) setScore((n) => n + 2);
+    setMessage(made ? "Swish! +2 points" : "Missed it — next shot!");
+  };
+  return <div className="arcade-game">
+    <div className="arcade-game-heading"><div><p className="arcade-eyebrow">BASKETBALL</p><h2>Hoop Shot</h2></div><span className="arcade-score">{score} points</span></div>
+    <div className="sports-court basketball-court"><span className="basketball-hoop">◎</span><span className="basketball-ball">●</span></div>
+    <p className="arcade-help">{message} Shots left: {10-shots}</p>
+    {shots < 10 ? <button className="sports-primary" onClick={shoot}>Shoot ball</button> : <p className="arcade-win">Final score: {score} points out of 20.</p>}
+    <button className="arcade-secondary" onClick={() => {setScore(0);setShots(0);setMessage("Take 10 shots!");}}>Play again</button>
+  </div>;
+}
+
+function SoccerGame() {
+  const [attempt, setAttempt] = useState(0);
+  const [goals, setGoals] = useState(0);
+  const [message, setMessage] = useState("Choose a corner to shoot.");
+  const shoot = (direction) => {
+    if (attempt >= 5) return;
+    const saved = ["left","center","right"][Math.floor(Math.random()*3)];
+    const scored = direction !== saved;
+    setAttempt((n) => n + 1);
+    if (scored) setGoals((n) => n + 1);
+    setMessage(scored ? "GOAL! You beat the keeper." : "Saved by the keeper!");
+  };
+  return <div className="arcade-game">
+    <div className="arcade-game-heading"><div><p className="arcade-eyebrow">SOCCER</p><h2>Penalty Shootout</h2></div><span className="arcade-score">{goals}/5 goals</span></div>
+    <div className="sports-court soccer-goal"><span>🥅</span><span>⚽</span></div>
+    <p className="arcade-help">{message} Kicks left: {5-attempt}</p>
+    {attempt < 5 ? <div className="game-controls"><div>{["left","center","right"].map((d) => <button key={d} onClick={() => shoot(d)}>{d[0].toUpperCase()+d.slice(1)}</button>)}</div></div> : <p className="arcade-win">Shootout complete: {goals} goals!</p>}
+    <button className="arcade-secondary" onClick={() => {setAttempt(0);setGoals(0);setMessage("Choose a corner to shoot.");}}>Play again</button>
+  </div>;
+}
+
 export default function GamesCatalog() {
   const [selected, setSelected] = useState("beans");
   const game = games.find(g => g.id === selected) || games[0];
@@ -100,8 +168,8 @@ export default function GamesCatalog() {
     <div className="minigames-header"><div><p className="minigames-eyebrow">WOOSH ARCADE</p><h1>Games</h1><p className="minigames-description">Pick a game and play without leaving Woosh.</p></div></div>
     <div className="arcade-game-picker" aria-label="Choose a game">{games.map(g => <button key={g.id} className={`arcade-game-option ${selected === g.id ? "selected" : ""}`} onClick={() => setSelected(g.id)} aria-pressed={selected === g.id}><span className="arcade-game-category">{g.type}</span><strong>{g.name}</strong><span>{g.detail}</span></button>)}</div>
     <div className="minigames-game-shell arcade-stage"><div className="minigames-game-topbar"><span className="minigames-game-dot" aria-hidden="true" /><span>{game.name}</span>{selected === "beans" && <a href="https://someone-stole-my-beans.web.app/" target="_blank" rel="noopener noreferrer">Open separately ↗</a>}</div>
-      {selected === "beans" ? <iframe className="minigames-iframe" src="https://someone-stole-my-beans.web.app/" title="Someone Stole My Beans game" loading="lazy" allow="fullscreen; gamepad" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : <div className="arcade-play-area">{selected === "2048" ? <Puzzle2048 /> : selected === "memory" ? <MemoryMatch /> : <TicTacToe />}</div>}
+      {selected === "beans" ? <iframe className="minigames-iframe" src="https://someone-stole-my-beans.web.app/" title="Someone Stole My Beans game" loading="lazy" allow="fullscreen; gamepad" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : <div className="arcade-play-area">{selected === "2048" ? <Puzzle2048 /> : selected === "memory" ? <MemoryMatch /> : selected === "tic" ? <TicTacToe /> : selected === "racing" ? <RacingGame /> : selected === "basketball" ? <BasketballGame /> : <SoccerGame /> }</div>}
     </div>
-    <p className="minigames-note">2048, Memory Match, and Tic-Tac-Toe run directly inside Woosh. If the Beans game cannot load in its frame, open it separately.</p>
+    <p className="minigames-note">2048, Memory Match, Tic-Tac-Toe, Turbo Racing, Hoop Shot, and Penalty Shootout run directly inside Woosh. If the Beans game cannot load in its frame, open it separately.</p>
   </section>;
 }
