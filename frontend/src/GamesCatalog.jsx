@@ -98,7 +98,7 @@ function Puzzle2048() {
 }
 
 function shuffleCards() {
-  const deck = ["W", "O", "O", "S", "H", "!", "W", "O", "O", "S", "H", "!"];
+  const deck = ["W", "O", "S", "H", "!", "★", "W", "O", "S", "H", "!", "★"];
   for (let i = deck.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
