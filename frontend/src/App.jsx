@@ -24,6 +24,13 @@ function App() {
 
   const [wooshText, setWooshText] = useState("");
   const [wooshImage, setWooshImage] = useState(null);
+  const [pollEnabled, setPollEnabled] = useState(false);
+  const [pollQuestion, setPollQuestion] = useState("");
+  const [pollOptions, setPollOptions] = useState(["", ""]);
+  const [gifSearchInputs, setGifSearchInputs] = useState({});
+  const [gifResults, setGifResults] = useState({});
+  const [gifPickerOpen, setGifPickerOpen] = useState({});
+  const [gifLoading, setGifLoading] = useState({});
 
   const [wooshes, setWooshes] = useState([]);
 
@@ -915,7 +922,7 @@ const leaveGroup = async () => {
   const handleCreateWoosh = async (event) => {
     event.preventDefault();
 
-    if (!wooshText.trim() && !wooshImage) {
+    if (!wooshText.trim() && !wooshImage && !(pollEnabled && pollQuestion.trim())) {
       alert("Your Woosh needs some content.");
       return;
     }
@@ -931,11 +938,15 @@ const leaveGroup = async () => {
         body: JSON.stringify({
           text: wooshText.trim(),
           image: wooshImage,
+          poll: pollEnabled ? { question: pollQuestion, options: pollOptions.filter((option) => option.trim()) } : null,
         }),
       });
 
       setWooshText("");
       setWooshImage(null);
+      setPollEnabled(false);
+      setPollQuestion("");
+      setPollOptions(["", ""]);
       setShowComposer(false);
 
       await loadWooshes();
@@ -1011,7 +1022,7 @@ const leaveGroup = async () => {
     }));
   };
 
-  const addComment = async (wooshId) => {
+  const addComment = async (wooshId, gifUrl = null) => {
     const text = commentInputs[wooshId]?.trim();
 
     if (!loggedInUser) {
@@ -1019,14 +1030,12 @@ const leaveGroup = async () => {
       return;
     }
 
-    if (!text) return;
+    if (!text && !gifUrl) return;
 
     try {
       await apiFetch(`/api/wooshes/${wooshId}/comments`, {
         method: "POST",
-        body: JSON.stringify({
-          text,
-        }),
+        body: JSON.stringify({ text, gifUrl }),
       });
 
       setCommentInputs((current) => ({
@@ -1034,10 +1043,41 @@ const leaveGroup = async () => {
         [wooshId]: "",
       }));
 
+      setGifPickerOpen((current) => ({ ...current, [wooshId]: false }));
+      setGifResults((current) => ({ ...current, [wooshId]: [] }));
       await loadWooshes();
     } catch (error) {
       console.error("Comment error:", error);
       alert(error.message);
+    }
+  };
+
+
+  const searchGifs = async (wooshId) => {
+    const query = (gifSearchInputs[wooshId] || "").trim();
+    if (!query) return;
+    setGifLoading((current) => ({ ...current, [wooshId]: true }));
+    try {
+      const data = await apiFetch(\`/api/giphy/search?q=\${encodeURIComponent(query)}\`);
+      setGifResults((current) => ({ ...current, [wooshId]: data.gifs || [] }));
+    } catch (error) {
+      alert(error.message || "GIF search is not available right now.");
+    } finally {
+      setGifLoading((current) => ({ ...current, [wooshId]: false }));
+    }
+  };
+
+  const voteInPoll = async (wooshId, optionId) => {
+    if (!loggedInUser) { setAuthPage("login"); return; }
+    try {
+      await apiFetch(\`/api/wooshes/\${wooshId}/poll/vote\`, {
+        method: "POST",
+        body: JSON.stringify({ optionId }),
+      });
+      await loadWooshes();
+    } catch (error) {
+      alert(error.message || "Could not save your vote.");
+      await loadWooshes();
     }
   };
 
@@ -1140,11 +1180,24 @@ const leaveGroup = async () => {
         )}
 
         {woosh.image && (
-          <img
-            src={woosh.image}
-            alt="Woosh attachment"
-            className="woosh-image"
-          />
+          <img src={woosh.image} alt="Woosh attachment" className="woosh-image" />
+        )}
+
+        {woosh.poll && (
+          <section className="woosh-poll">
+            <h3>{woosh.poll.question}</h3>
+            {woosh.poll.options.map((option) => {
+              const total = woosh.poll.totalVotes || 0;
+              const percent = total ? Math.round((option.votes / total) * 100) : 0;
+              return <div className="poll-option-row" key={option.id}>
+                <button className="poll-option-button" onClick={() => voteInPoll(woosh.id, option.id)}>
+                  <span>{option.text}</span><strong>{percent}%</strong>
+                </button>
+                <div className="poll-result-track"><span style={{ width: \`\${percent}%\` }} /></div>
+              </div>;
+            })}
+            <p className="poll-total">{woosh.poll.totalVotes} vote{woosh.poll.totalVotes === 1 ? "" : "s"} · one vote per account</p>
+          </section>
         )}
 
         <div className="woosh-actions">
@@ -1213,9 +1266,8 @@ const leaveGroup = async () => {
                     </span>
                   </button>
 
-                  <span className="comment-text">
-                    {comment.text}
-                  </span>
+                  {comment.text && <span className="comment-text">{comment.text}</span>}
+                  {comment.gifUrl && <img className="comment-gif" src={comment.gifUrl} alt="GIF comment" loading="lazy" />}
                 </div>
               );
             })}
@@ -1241,13 +1293,19 @@ const leaveGroup = async () => {
                   }}
                 />
 
-                <button
-                  onClick={() =>
-                    addComment(woosh.id)
-                  }
-                >
-                  Post
-                </button>
+                <button onClick={() => addComment(woosh.id)}>Post</button>
+                <button type="button" className="gif-picker-toggle" onClick={() => setGifPickerOpen((current) => ({ ...current, [woosh.id]: !current[woosh.id] }))}>GIF</button>
+              </div>
+            )}
+            {loggedInUser && gifPickerOpen[woosh.id] && (
+              <div className="gif-picker">
+                <form onSubmit={(event) => { event.preventDefault(); searchGifs(woosh.id); }}>
+                  <input value={gifSearchInputs[woosh.id] || ""} placeholder="Search GIPHY..." onChange={(event) => setGifSearchInputs((current) => ({ ...current, [woosh.id]: event.target.value }))} />
+                  <button type="submit" disabled={gifLoading[woosh.id]}>{gifLoading[woosh.id] ? "Searching..." : "Search"}</button>
+                </form>
+                <div className="gif-results">
+                  {(gifResults[woosh.id] || []).map((gif) => <button type="button" key={gif.id} onClick={() => addComment(woosh.id, gif.url)} title={gif.alt}><img src={gif.preview} alt={gif.alt} loading="lazy" /></button>)}
+                </div>
               </div>
             )}
           </div>
@@ -2768,6 +2826,15 @@ color: "#111111",
                 </div>
               )}
 
+              <div className="poll-composer">
+                <label><input type="checkbox" checked={pollEnabled} onChange={(event) => setPollEnabled(event.target.checked)} /> Add a poll</label>
+                {pollEnabled && <>
+                  <input className="poll-question-input" value={pollQuestion} onChange={(event) => setPollQuestion(event.target.value)} placeholder="Ask a question..." maxLength={240} />
+                  {pollOptions.map((option, index) => <input key={index} value={option} maxLength={100} placeholder={\`Option \${index + 1}\`} onChange={(event) => setPollOptions((current) => current.map((value, i) => i === index ? event.target.value : value))} />)}
+                  {pollOptions.length < 4 && <button type="button" onClick={() => setPollOptions((current) => [...current, ""])}>Add option</button>}
+                  {pollOptions.length > 2 && <button type="button" onClick={() => setPollOptions((current) => current.slice(0, -1))}>Remove option</button>}
+                </>}
+              </div>
               <div className="composer-footer">
                 <label className="file-button">
                   Add image
