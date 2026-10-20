@@ -111,7 +111,7 @@ function App() {
   // API HELPER
   // ============================================================
 
-  const apiFetch = async (endpoint, options = {}) => {
+ const apiFetch = async (endpoint, options = {}) => {
     const headers = {
       ...(options.body && !(options.body instanceof FormData)
         ? { "Content-Type": "application/json" }
@@ -129,13 +129,27 @@ function App() {
 
     const data = await response.json().catch(() => ({}));
 
+    const isAuthRequest =
+      endpoint.startsWith("/api/auth/login") ||
+      endpoint.startsWith("/api/auth/register");
+
+    if (response.status === 401 && token && !isAuthRequest) {
+      localStorage.removeItem("wooshToken");
+      localStorage.removeItem("wooshLoggedInUser");
+
+      setLoggedInUser(null);
+      setAuthPage("login");
+      setActivePage("Wooshes");
+
+      throw new Error("Your session expired. Please log in again.");
+    }
+
     if (!response.ok) {
       throw new Error(data.error || "Something went wrong.");
     }
 
     return data;
-  };
-
+};
   // ============================================================
   // NOTIFICATIONS
   // ============================================================
