@@ -1299,6 +1299,7 @@ const leaveGroup = async () => {
             )}
             {loggedInUser && gifPickerOpen[woosh.id] && (
               <div className="gif-picker">
+                <p className="giphy-attribution">Powered by GIPHY</p>
                 <form onSubmit={(event) => { event.preventDefault(); searchGifs(woosh.id); }}>
                   <input value={gifSearchInputs[woosh.id] || ""} placeholder="Search GIPHY..." onChange={(event) => setGifSearchInputs((current) => ({ ...current, [woosh.id]: event.target.value }))} />
                   <button type="submit" disabled={gifLoading[woosh.id]}>{gifLoading[woosh.id] ? "Searching..." : "Search"}</button>
