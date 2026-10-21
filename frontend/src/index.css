@@ -1630,10 +1630,31 @@ nav {
 }
 
 .dm-message {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  padding: 6px 4px;
+  display: block;
+  width: fit-content;
+  max-width: min(75%, 680px);
+  padding: 10px 13px;
+  border: 1px solid #343b49;
+  border-radius: 14px;
+  background: #171c25;
+  color: #e6eaf0;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.dm-message.theirs {
+  border-color: #343b49;
+  border-top-left-radius: 5px;
+}
+
+.dm-message.mine {
+  margin-left: auto;
+  border-color: #477fbd;
+  background: #1b2b3e;
+  border-top-right-radius: 5px;
 }
 
 .dm-message-avatar {
