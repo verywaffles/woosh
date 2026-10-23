@@ -5,6 +5,7 @@ import Blabbers from "./Blabbers.jsx";
 import MessagingHub from "./MessagingHub.jsx";
 import Explore from "./Explore.jsx";
 import GamesCatalog from "./GamesCatalog.jsx";
+import TheWoosh from "./TheWoosh.jsx";
 
 const API_URL = "https://woosh-api.duckdns.org";
 
@@ -2690,6 +2691,16 @@ color: "#111111",
       return <Explore apiFetch={apiFetch} openProfile={openProfile} loggedInUser={loggedInUser} />;
     }
 
+    if (activePage === "TheWoosh") {
+      return (
+        <TheWoosh
+          loggedInUser={loggedInUser}
+          token={token}
+          onLogin={() => setAuthPage("login")}
+          onOpenProfile={openProfile}
+        />
+      );
+    }
     if (activePage === "Minigames") {
       return <GamesCatalog />;
     }
@@ -3105,6 +3116,7 @@ color: "#111111",
           className={`sidebar ${mobileMenuOpen ? "mobile-menu-open" : ""}`}>
           <nav>
             {[
+              { page: "TheWoosh", label: "THE WOOSH", symbol: "woosh" },
               { page: "Wooshes", label: "Wooshes", symbol: "feed" },
               { page: "Explore", label: "Explore", symbol: "explore" },
               { page: "Wooshies", label: "Wooshies", symbol: "video" },
@@ -3146,6 +3158,16 @@ color: "#111111",
                   aria-hidden="true"
                   focusable="false"
                 >
+                  {symbol === "woosh" && (
+                    <path
+                      d="M3 6h5l2 12 2-9 2 9 2-12h5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
                   {symbol === "feed" && (
                     <>
                       <rect x="3.5" y="4" width="17" height="4" rx="1.5" />
