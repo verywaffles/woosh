@@ -1146,7 +1146,21 @@ const leaveGroup = async () => {
       alert("You need to be logged in to post.");
       return;
     }
+    if (pollEnabled) {
+      const options = pollOptions
+        .map((option) => option.trim())
+        .filter(Boolean);
 
+      if (
+        !pollQuestion.trim() ||
+        options.length < 2 ||
+        options.length > 4 ||
+        new Set(options.map((option) => option.toLowerCase())).size !== options.length
+      ) {
+        alert("Enter a question and 2–4 different poll options.");
+        return;
+      }
+    }
     try {
       await apiFetch("/api/wooshes", {
         method: "POST",
