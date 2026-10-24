@@ -1486,10 +1486,9 @@ const leaveGroup = async () => {
               woosh.rewooshes.length}
           </button>
 
-          {loggedInUser &&
-            woosh.username?.toLowerCase() === loggedInUser.toLowerCase() && (
+          {loggedInUser && (isOwner || woosh.username?.toLowerCase() === loggedInUser.toLowerCase()) && (
               <button className="delete-post-button" onClick={() => deleteWoosh(woosh)}>
-                Delete
+                {isOwner && woosh.username?.toLowerCase() !== loggedInUser.toLowerCase() ? "Owner delete" : "Delete"}
               </button>
             )}
         </div>
@@ -2016,8 +2015,9 @@ color: "#111111",
 
             <div>
               <strong>
-                @{otherUser.username}
+                {otherUser.nickname || `@${otherUser.username}`} {ownerBadge(otherUser.username)}
               </strong>
+              {otherUser.nickname && <small className="dm-real-username">@{otherUser.username}</small>}
             </div>
           </button>
         </div>
@@ -2667,7 +2667,7 @@ color: "#111111",
                     )}
 
                     <span className="woosh-username">
-                      @{currentProfile.username}
+                      @{currentProfile.username} {ownerBadge(currentProfile.username)}
                     </span>
                   </button>
                 </div>
@@ -2831,7 +2831,7 @@ color: "#111111",
               {wooshie.caption && <p className="wooshie-caption">{wooshie.caption}</p>}
               <div className="wooshie-actions"><button className={wooshie.likedByMe ? "liked" : ""} onClick={() => toggleWooshieLike(wooshie)}>{wooshie.likedByMe ? "Liked" : "Like"} · {wooshie.likeCount || 0}</button><button onClick={() => setWooshieCommentsOpen((current) => ({ ...current, [wooshie.id]: !wooshieCommentsOpen[wooshie.id] }))}>Comments · {wooshie.commentCount || (wooshie.comments || []).length || 0}</button>{loggedInUser && (isOwner || wooshie.username?.toLowerCase() === loggedInUser.toLowerCase()) && <button className="delete-post-button" onClick={() => deleteWooshie(wooshie)}>{isOwner && wooshie.username?.toLowerCase() !== loggedInUser.toLowerCase() ? "Owner delete" : "Delete"}</button>}<span className="wooshie-view-count">{wooshie.viewCount || 0} views</span></div>
               {wooshieCommentsOpen[wooshie.id] && <div className="wooshie-comments">
-                {(wooshie.comments || []).map((comment) => <div className="wooshie-comment" key={comment.id}><strong>@{comment.username}</strong><span>{comment.text}</span></div>)}
+                {(wooshie.comments || []).map((comment) => <div className="wooshie-comment" key={comment.id}><strong>@{comment.username} {ownerBadge(comment.username)}</strong><span>{comment.text}</span></div>)}
                 {!(wooshie.comments || []).length && <p className="wooshie-help">No comments yet. Start the conversation.</p>}
                 <form className="wooshie-comment-form" onSubmit={(event) => submitWooshieComment(event, wooshie)}><input value={wooshieCommentInputs[wooshie.id] || ""} onChange={(event) => setWooshieCommentInputs((current) => ({ ...current, [wooshie.id]: event.target.value }))} placeholder="Add a comment..." maxLength={1000} required /><button className="post-button" type="submit">Comment</button></form>
               </div>}
