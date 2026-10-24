@@ -1,71 +1,444 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#050505">
-<title>THE SUB-LEVEL 4 INCIDENT</title>
-<style>
-:root{color-scheme:dark;font-family:"Courier New",monospace;background:#050505;color:#33ff33}
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;min-height:100%;background:#050505}
-body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden}
-#game-container{width:min(760px,100%);height:min(620px,calc(100vh - 20px));min-height:360px;background:#000;border:2px solid #22aa22;box-shadow:0 0 20px #00c80033;padding:clamp(10px,2.5vw,20px);display:flex;flex-direction:column}
-#hud{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;border-bottom:1px solid #22aa22;padding-bottom:10px;margin-bottom:10px;font-size:clamp(10px,1.6vw,13px)}
-#output{flex:1;min-height:0;overflow-y:auto;margin-bottom:12px;padding-right:8px;font-size:clamp(12px,1.8vw,15px);line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
-#output p{margin:0 0 10px}
-#input-area{display:flex;gap:10px;border-top:1px solid #22aa22;padding-top:10px;flex-shrink:0}
-#input-prompt{margin-right:0}
-#user-input{min-width:0;flex:1;background:transparent;border:0;color:#33ff33;font:inherit;font-size:16px;outline:none}
-.warning{color:#ff5555}.system{color:#888}.success{color:#ffff33}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:#22aa22}
-@media(max-width:480px){body{padding:0}#game-container{height:100dvh;min-height:320px;border-left:0;border-right:0;padding:10px}#hud{gap:5px 10px}#output{font-size:13px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SUB-LEVEL 4 INCIDENT v1.1</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #game-container {
+            width: 700px;
+            height: 500px;
+            background-color: #000;
+            border: 2px solid #22aa22;
+            box-shadow: 0 0 20px rgba(0, 200, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        #hud {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #22aa22;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        #output {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 10px;
+            font-size: 15px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+        #input-area {
+            display: flex;
+            border-top: 1px solid #22aa22;
+            padding-top: 10px;
+        }
+        #input-prompt {
+            margin-right: 10px;
+        }
+        #user-input {
+            background: transparent;
+            border: none;
+            color: #33ff33;
+            font-family: inherit;
+            font-size: 15px;
+            flex-grow: 1;
+            outline: none;
+        }
+        .warning { color: #ff3333; }
+        .system { color: #888888; }
+        .success { color: #ffff33; }
+        
+        #ending-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            padding: 32px;
+            box-sizing: border-box;
+            background: #000;
+            color: #33ff33;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        #ending-title {
+            margin: 0;
+            color: #ff1717;
+            font-size: clamp(76px, 17vw, 190px);
+            line-height: 0.9;
+            font-weight: 900;
+            letter-spacing: -0.07em;
+            text-transform: uppercase;
+            text-shadow:
+                5px 5px 0 #650000,
+                10px 10px 0 #260000,
+                0 0 16px rgba(255, 0, 0, 0.95),
+                0 0 48px rgba(255, 0, 0, 0.55);
+            transform-origin: center;
+            animation: game-over-slam 650ms cubic-bezier(.12,.8,.22,1.25) both,
+                       game-over-flicker 2.4s 650ms steps(1, end) infinite;
+        }
+        @keyframes game-over-slam {
+            0%   { transform: translateY(-120vh) scale(1.7) rotate(-5deg); opacity: 0; filter: blur(10px); }
+            65%  { transform: translateY(12px) scale(.92) rotate(1deg); opacity: 1; filter: blur(0); }
+            82%  { transform: translateY(-5px) scale(1.03) rotate(-.4deg); }
+            100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+        }
+        @keyframes game-over-flicker {
+            0%, 88%, 92%, 100% { opacity: 1; }
+            89%, 91% { opacity: .72; }
+            90% { opacity: .9; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #ending-title { animation: none; }
+        }
+        #ending-message {
+            margin: 0;
+            color: #66ccff;
+            font-size: clamp(18px, 3vw, 30px);
+            line-height: 1.4;
+            max-width: 900px;
+            text-shadow: 0 0 12px rgba(80, 180, 255, 0.35);
+        }
+        #ending-refresh {
+            position: absolute;
+            bottom: 36px;
+            margin: 0;
+            color: #33ff33;
+            font-size: clamp(16px, 2.5vw, 24px);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #22aa22; }
+    </style>
 </head>
 <body>
-<main id="game-container" aria-label="The Sub-Level 4 Incident text adventure">
-<div id="hud"><div>LOCATION: <span id="hud-location">Loading...</span></div><div>BATTERY: <span id="hud-battery">100%</span></div><div>SANITY: <span id="hud-sanity">100%</span></div><div>KEYS: <span id="hud-keys">0/3</span></div></div>
-<div id="output" aria-live="polite"></div>
-<form id="input-area"><label id="input-prompt" for="user-input">&gt;</label><input id="user-input" type="text" autofocus autocomplete="off" spellcheck="false" aria-label="Enter a game command"></form>
-</main>
+
+<div id="ending-screen" role="status" aria-live="polite">
+    <h1 id="ending-title">GAME OVER</h1>
+    <p id="ending-message"></p>
+    <p id="ending-refresh">REFRESH TO TRY AGAIN</p>
+</div>
+
+<div id="game-container">
+    <div id="hud">
+        <div>LOCATION: <span id="hud-location">Loading...</span></div>
+        <div>BATTERY: <span id="hud-battery">100%</span></div>
+        <div>SANITY: <span id="hud-sanity">100%</span></div>
+        <div>KEYS: <span id="hud-keys">0/3</span></div>
+    </div>
+    <div id="output"></div>
+    <div id="input-area">
+        <span id="input-prompt">&gt;</span>
+        <input type="text" id="user-input" autofocus autocomplete="off">
+    </div>
+</div>
+
 <script>
-(() => {
-const outputDiv=document.getElementById("output"), userInput=document.getElementById("user-input");
-const state={currentRoom:"corridor",battery:100,sanity:100,keysFound:0,flashlightOn:true,creatureDistance:4,gameOver:false};
-const rooms={
-corridor:{name:"Main Laboratory Corridor",desc:"A long, flickering hallway. Thick blast doors seal the exit at the far end. Doors lead to the [Server Room], [Bio-Lab], and [Security Office].",commands:["server","bio","security","exit"]},
-server:{name:"Server Room / Databank",desc:"The servers hum weakly, coated in frost. Wires hang like vines from the ceiling. You see a glinting object on a console desk. Type [search] to investigate, or [corridor] to head back.",hasKey:true,commands:["search","corridor"]},
-bio:{name:"Biological Testing Suite",desc:"Smashed glass containment tanks litter the floor. Green synthetic fluid pools near your boots. A dark locker stands in the corner. Type [search], [hide], or [corridor].",hasKey:true,commands:["search","hide","corridor"]},
-security:{name:"Security Station",desc:"CCTV monitors blink through static. A drawer sits half-open under the main desk. Type [search] to inspect it, or [corridor] to leave.",hasKey:true,commands:["search","corridor"]}
-};
-function log(text,cls=""){const p=document.createElement("p");if(cls)p.className=cls;p.textContent=text;outputDiv.appendChild(p);outputDiv.scrollTop=outputDiv.scrollHeight}
-function updateHUD(){document.getElementById("hud-location").textContent=rooms[state.currentRoom].name.toUpperCase();document.getElementById("hud-battery").textContent=state.battery+"%";document.getElementById("hud-sanity").textContent=state.sanity+"%";document.getElementById("hud-keys").textContent=state.keysFound+"/3"}
-function endGame(){state.gameOver=true;userInput.disabled=true;log("[Refresh this game to try again]","system")}
-function look(){log("\n"+rooms[state.currentRoom].desc)}
-function tick(){if(state.gameOver)return;
-if(state.flashlightOn){state.battery=Math.max(0,state.battery-2);if(!state.battery){state.flashlightOn=false;log("Your flashlight sputters and dies. You are plunged into absolute darkness.","warning")}}
-if(!state.flashlightOn){state.sanity=Math.max(0,state.sanity-8);log("The dark feels heavy. You hear breathing behind you. Your sanity is slipping.","warning")}else if(Math.random()>.6)state.sanity=Math.max(0,state.sanity-1);
-if(Math.random()>.4){if(state.flashlightOn){state.creatureDistance--;log("Heavy, scraping footsteps echo closer down the metal vents...","warning")}else if(state.creatureDistance<4){state.creatureDistance++;log("The heavy footsteps seem to fade back into the shadows.","system")}}
-if(state.sanity<=0){log("\nYou lose your grip on reality. GAME OVER.","warning");endGame()}else if(state.creatureDistance<=0){log("\nSomething massive drops from the ceiling behind you. GAME OVER.","warning");endGame()}
-updateHUD()}
-function handleCommand(raw){const cmd=raw.toLowerCase().trim();if(!cmd)return;log("\n> "+cmd,"system");if(state.gameOver)return;
-if(cmd==="help"){log("Actions: look, light (toggle flashlight), status. Use the room names shown in brackets to move.");return}
-if(cmd==="light"){if(state.battery<=0){log("The battery is dead. The switch does nothing.","warning");return}state.flashlightOn=!state.flashlightOn;log("You click the flashlight "+(state.flashlightOn?"ON.":"OFF, hiding your presence."));updateHUD();return}
-if(cmd==="status"){log("Battery "+state.battery+"% | Sanity "+state.sanity+"% | Keycards "+state.keysFound+"/3");return}
-if(cmd==="look"){look();return}
-const current=rooms[state.currentRoom];
-if(cmd==="corridor"&&current.commands.includes("corridor")){state.currentRoom="corridor";look();tick();return}
-if(state.currentRoom==="corridor"){
-if(["server","bio","security"].includes(cmd)){state.currentRoom=cmd;look();tick();return}
-if(cmd==="exit"){if(state.keysFound>=3){log("\nThe blast doors slide open. You escape into the morning sun. YOU SURVIVED!","success");endGame()}else log('The security console blinks red: "ACCESS DENIED. THREE KEYCARDS REQUIRED."',"warning");return}
-}
-if(cmd==="search"&&current.commands.includes("search")){if(current.hasKey){state.keysFound++;current.hasKey=false;log("You found an encrypted keycard! It matches the main blast door console.","success")}else log("You search the room but find nothing else of use.");tick();return}
-if(cmd==="hide"&&state.currentRoom==="bio"){log("You slide into the metal locker and hold your breath.");if(state.creatureDistance<4){state.creatureDistance=4;log("Claws scrape past the locker door, then retreat down the corridor...","system")}if(state.flashlightOn)log("Your flashlight is still on. You should turn it off while hiding.","warning");tick();return}
-log("Unknown command or action not possible here. Type [help] if you are stuck.")
-}
-log("==================================================","success");log("          THE SUB-LEVEL 4 INCIDENT v1.0          ","success");log("==================================================","success");log("Type [help] at any time to view controls.");log("--------------------------------------------------");log("SYSTEM WARNING: Biological anomaly containment breach detected in sectors A through D.");log("Facility lockdown initiated. Use backup terminal consoles to bypass gates.");look();updateHUD();
-document.getElementById("input-area").addEventListener("submit",e=>{e.preventDefault();handleCommand(userInput.value);userInput.value="";userInput.focus()});
-})();
+    const outputDiv = document.getElementById('output');
+    const userInput = document.getElementById('user-input');
+    
+    // Game State
+    let state = {
+        currentRoom: 'corridor',
+        battery: 100,
+        sanity: 100,
+        keysFound: 0,
+        flashlightOn: true,
+        creatureDistance: 4, // 0 means dead
+        hasEscaped: false,
+        gameOver: false
+    };
+
+    const rooms = {
+        corridor: {
+            name: "Main Laboratory Corridor",
+            desc: "A long, flickering hallway. Thick blast doors seal the exit at the far end. Doors lead to the [Server Room], [Bio-Lab], and [Security Office].",
+            commands: ['server', 'bio', 'security', 'exit']
+        },
+        server: {
+            name: "Server Room / Databank",
+            desc: "The servers hum weakly, coated in a layer of frost. Wires hang like vines from the ceiling. You see a glinting object on a console desk. Type [search] to investigate, or [corridor] to head back.",
+            hasKey: true,
+            commands: ['search', 'corridor']
+        },
+        bio: {
+            name: "Biological Testing Suite",
+            desc: "Smashed glass containment tanks litter the floor. A green synthetic fluid pools near your boots. A dark locker stands in the corner, good for hiding. Type [search] to look around, [hide] to crawl in the locker, or [corridor] to return.",
+            hasKey: true,
+            commands: ['search', 'hide', 'corridor']
+        },
+        security: {
+            name: "Security Station",
+            desc: "CCTV monitors blink through static. A drawer sits half-open under the main desk. Type [search] to inspect it, or [corridor] to leave.",
+            hasKey: true,
+            commands: ['search', 'corridor']
+        }
+    };
+
+    function log(text, className = '') {
+        const p = document.createElement('p');
+        if (className) p.className = className;
+        p.innerHTML = text;
+        outputDiv.appendChild(p);
+        outputDiv.scrollTop = outputDiv.scrollHeight;
+    }
+
+    function updateHUD() {
+        document.getElementById('hud-location').innerText = rooms[state.currentRoom].name.toUpperCase();
+        document.getElementById('hud-battery').innerText = state.battery + '%';
+        document.getElementById('hud-sanity').innerText = state.sanity + '%';
+        document.getElementById('hud-keys').innerText = state.keysFound + '/3';
+    }
+
+    function gameTick() {
+        if (state.gameOver) return;
+
+        // Flashlight drain
+        if (state.flashlightOn) {
+            state.battery = Math.max(0, state.battery - 2);
+            if (state.battery === 0) {
+                state.flashlightOn = false;
+                log("❗ Your flashlight sputtered and died. You are plunged into absolute darkness.", "warning");
+            }
+        }
+
+        // Sanity check
+        if (!state.flashlightOn) {
+            state.sanity = Math.max(0, state.sanity - 8);
+            log("👤 The dark is heavy. You hear breathing behind you. Your sanity is slipping.", "warning");
+        } else {
+            // Random small drain
+            if (Math.random() > 0.6) state.sanity = Math.max(0, state.sanity - 1);
+        }
+
+        // Creature mechanics
+        if (Math.random() > 0.4) {
+            if (state.flashlightOn) {
+                state.creatureDistance--;
+                log("👣 Heavy, scraping footsteps echo closer down the metal vents...", "warning");
+            } else {
+                // If light is off, creature might lose you
+                if (state.creatureDistance < 4) {
+                    state.creatureDistance++;
+                    log("🔊 The heavy footsteps seem to fade back into the shadows.", "system");
+                }
+            }
+        }
+
+        // Check loss conditions
+        if (state.sanity <= 0) {
+            log("\n💀 You lost your mind to the dark. Your heart stops out of pure terror. GAME OVER.", "warning");
+            endGame("You lost your sanity to the darkness.");
+        } else if (state.creatureDistance <= 0) {
+            log("\n💀 Something massive slashes down from the ceiling behind you before you can turn. GAME OVER.", "warning");
+            endGame("You were killed by the creature.");
+        }
+
+        updateHUD();
+    }
+
+    function playGameOverSlam() {
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+
+            const audioContext = new AudioContextClass();
+            if (audioContext.state === 'suspended') audioContext.resume();
+
+            const now = audioContext.currentTime;
+
+            // Low impact: a short descending bass thump.
+            const bass = audioContext.createOscillator();
+            const bassGain = audioContext.createGain();
+            bass.type = 'sine';
+            bass.frequency.setValueAtTime(125, now);
+            bass.frequency.exponentialRampToValueAtTime(42, now + 0.22);
+            bassGain.gain.setValueAtTime(0.0001, now);
+            bassGain.gain.exponentialRampToValueAtTime(0.65, now + 0.015);
+            bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+            bass.connect(bassGain);
+            bassGain.connect(audioContext.destination);
+            bass.start(now);
+            bass.stop(now + 0.34);
+
+            // Brief noisy crunch to make the title feel like it hits the screen.
+            const duration = 0.16;
+            const buffer = audioContext.createBuffer(1, Math.floor(audioContext.sampleRate * duration), audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < data.length; i++) {
+                data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+            }
+            const noise = audioContext.createBufferSource();
+            const filter = audioContext.createBiquadFilter();
+            const noiseGain = audioContext.createGain();
+            noise.buffer = buffer;
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(700, now);
+            noiseGain.gain.setValueAtTime(0.0001, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.22, now + 0.01);
+            noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+            noise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(audioContext.destination);
+            noise.start(now);
+            noise.stop(now + duration);
+
+            window.setTimeout(() => audioContext.close(), 600);
+        } catch (error) {
+            // The ending screen still works if audio is unavailable or blocked.
+        }
+    }
+
+    function endGame(endingMessage) {
+        state.gameOver = true;
+        userInput.disabled = true;
+
+        const endingScreen = document.getElementById('ending-screen');
+        document.getElementById('ending-message').innerText = endingMessage;
+        endingScreen.style.display = 'flex';
+        playGameOverSlam();
+    }
+
+    function look() {
+        log("\n" + rooms[state.currentRoom].desc);
+    }
+
+    function handleCommand(cmd) {
+        cmd = cmd.toLowerCase().trim();
+        if (!cmd) return;
+
+        log(`\n&gt; ${cmd}`, 'system');
+
+        if (state.gameOver) return;
+
+        // Global commands
+        if (cmd === 'help') {
+            log("Available core actions: [look], [light] (toggles flashlight), [status], [exit] (lets you leave if you have all three key cards).");
+            log("Movement/Interaction keywords are bracketed in room descriptions (e.g., type 'server' to go to Server Room, or 'bio' to go to the Bio-Lab).");
+            return;
+        }
+        if (cmd === 'light') {
+            if (state.battery <= 0) {
+                log("The battery is completely dead. Toggling the switch does nothing.", "warning");
+                return;
+            }
+            state.flashlightOn = !state.flashlightOn;
+            log(state.flashlightOn ? "🔦 You click the flashlight back ON." : "🔦 You click the flashlight OFF, hiding your presence.");
+            updateHUD();
+            return;
+        }
+        if (cmd === 'status') {
+            log(`Stats: Battery ${state.battery}% | Sanity ${state.sanity}% | Cryptographic Keys Found: ${state.keysFound}/3`);
+            return;
+        }
+        if (cmd === 'look') {
+            look();
+            return;
+        }
+
+        // Room specific commands
+        let current = rooms[state.currentRoom];
+        
+        if (cmd === 'corridor' && current.commands.includes('corridor')) {
+            state.currentRoom = 'corridor';
+            look();
+            gameTick();
+            return;
+        }
+        
+        if (state.currentRoom === 'corridor') {
+            if (cmd === 'server' || cmd === 'bio' || cmd === 'security') {
+                state.currentRoom = cmd;
+                look();
+                gameTick();
+                return;
+            }
+            if (cmd === 'exit') {
+                if (state.keysFound >= 3) {
+                    state.gameOver = true;
+                    state.hasEscaped = true;
+                    log("\n🎉 The blast doors slide open with a heavy hydraulic hiss! You burst into the morning sun outside, completely escaping the nightmare. YOU SURVIVED!", "success");
+                    endGame("You escaped the facility and survived.");
+                } else {
+                    log(`❌ The security console blinks red: "ACCESS DENIED. REQUIRED DECRYPTION KEYS KEYCARDS: 3. CURRENTLY LOADED: ${state.keysFound}."`, "warning");
+                }
+                return;
+            }
+        }
+
+        if (cmd === 'search' && current.commands.includes('search')) {
+            if (current.hasKey) {
+                state.keysFound++;
+                current.hasKey = false;
+                log("🔑 You found an encrypted keycard! It matches the main blast door console.", "success");
+            } else {
+                log("You sift through the rubble but find nothing else of use.");
+            }
+            gameTick();
+            return;
+        }
+
+        if (cmd === 'hide' && state.currentRoom === 'bio') {
+            log("🔒 You slide into the metal locker and pull the grill shut. You hold your breath.");
+            if (state.creatureDistance < 4) {
+                state.creatureDistance = 4;
+                log("🔊 You hear claws scrape right past your locker locker door, then head back out the corridor...", "system");
+            }
+            // Drain extra battery while hiding
+            if (state.flashlightOn) {
+                log("(You should probably turn off your flashlight while hiding inside a locker...)", "warning");
+            }
+            gameTick();
+            return;
+        }
+
+        log("❓ Unknown command or action not possible here. Type [help] if you are stuck.");
+    }
+
+    // Initialize Game
+    log("==================================================", "success");
+    log("          THE SUB-LEVEL 4 INCIDENT v1.1          ", "success");
+    log("==================================================", "success");
+    log("Type [help] at any time to view controls.");
+    log("--------------------------------------------------");
+    log("SYSTEM WARNING: Biological anomaly containment breach detected in sectors A through D.");
+    log("Facility lockdown initiated. Use backup terminal consoles to bypass gates.");
+    
+    look();
+    updateHUD();
+
+    userInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            handleCommand(userInput.value);
+            userInput.value = '';
+        }
+    });
 </script>
+
 </body>
 </html>
