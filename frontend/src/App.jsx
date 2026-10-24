@@ -6,6 +6,7 @@ import MessagingHub from "./MessagingHub.jsx";
 import Explore from "./Explore.jsx";
 import GamesCatalog from "./GamesCatalog.jsx";
 import TheWoosh from "./TheWoosh.jsx";
+import ProfileStatuses from "./ProfileStatuses.jsx";
 
 const API_URL = "https://woosh-api.duckdns.org";
 
@@ -2632,6 +2633,13 @@ color: "#111111",
             </div>
           </div>
         )}
+
+        <ProfileStatuses
+          currentProfile={currentProfile}
+          loggedInUser={loggedInUser}
+          apiFetch={apiFetch}
+          profileWooshes={currentProfile.wooshes || []}
+        />
 
         <div className="profile-wooshes">
           <h2>Wooshes</h2>
