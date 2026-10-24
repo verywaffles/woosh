@@ -3,6 +3,7 @@ import "./GamesCatalog.css";
 
 const games = [
   { id: "beans", name: "Someone Stole My Beans", type: "Arcade", detail: "The original Woosh arcade game." },
+  { id: "sublevel", name: "The Sub-Level 4 Incident", type: "Horror", detail: "Explore the lab, find three keycards, and escape." },
   { id: "2048", name: "2048", type: "Puzzle", detail: "Merge matching tiles to reach 2048." },
   { id: "memory", name: "Memory Match", type: "Puzzle", detail: "Find all six matching pairs." },
   { id: "tic", name: "Tic-Tac-Toe", type: "Classic", detail: "Get three in a row with a friend." },
@@ -96,12 +97,13 @@ function TicTacToe() {
 export default function GamesCatalog() {
   const [selected, setSelected] = useState("beans");
   const game = games.find(g => g.id === selected) || games[0];
+  const standaloneUrl = selected === "beans" ? "https://someone-stole-my-beans.web.app/" : "/games/sub-level-4.html";
   return <section className="minigames-page arcade-catalog">
     <div className="minigames-header"><div><p className="minigames-eyebrow">WOOSH ARCADE</p><h1>Games</h1><p className="minigames-description">Pick a game and play without leaving Woosh.</p></div></div>
     <div className="arcade-game-picker" aria-label="Choose a game">{games.map(g => <button key={g.id} className={`arcade-game-option ${selected === g.id ? "selected" : ""}`} onClick={() => setSelected(g.id)} aria-pressed={selected === g.id}><span className="arcade-game-category">{g.type}</span><strong>{g.name}</strong><span>{g.detail}</span></button>)}</div>
-    <div className="minigames-game-shell arcade-stage"><div className="minigames-game-topbar"><span className="minigames-game-dot" aria-hidden="true" /><span>{game.name}</span>{selected === "beans" && <a href="https://someone-stole-my-beans.web.app/" target="_blank" rel="noopener noreferrer">Open separately ↗</a>}</div>
-      {selected === "beans" ? <iframe className="minigames-iframe" src="https://someone-stole-my-beans.web.app/" title="Someone Stole My Beans game" loading="lazy" allow="fullscreen; gamepad" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : <div className="arcade-play-area">{selected === "2048" ? <Puzzle2048 /> : selected === "memory" ? <MemoryMatch /> : <TicTacToe />}</div>}
+    <div className="minigames-game-shell arcade-stage"><div className="minigames-game-topbar"><span className="minigames-game-dot" aria-hidden="true" /><span>{game.name}</span>{(selected === "beans" || selected === "sublevel") && <a href={standaloneUrl} target="_blank" rel="noopener noreferrer">Open separately ↗</a>}</div>
+      {selected === "beans" ? <iframe className="minigames-iframe" src="https://someone-stole-my-beans.web.app/" title="Someone Stole My Beans game" loading="lazy" allow="fullscreen; gamepad" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : selected === "sublevel" ? <iframe className="minigames-iframe sublevel-game-iframe" src="/games/sub-level-4.html" title="The Sub-Level 4 Incident horror adventure" loading="lazy" allow="fullscreen" allowFullScreen /> : <div className="arcade-play-area">{selected === "2048" ? <Puzzle2048 /> : selected === "memory" ? <MemoryMatch /> : <TicTacToe />}</div>}
     </div>
-    <p className="minigames-note">2048, Memory Match, and Tic-Tac-Toe run directly inside Woosh. If the Beans game cannot load in its frame, open it separately.</p>
+    <p className="minigames-note">The Sub-Level 4 Incident, 2048, Memory Match, and Tic-Tac-Toe run inside Woosh. If an embedded game cannot load, open it separately when that option is available.</p>
   </section>;
 }
