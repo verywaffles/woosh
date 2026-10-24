@@ -114,6 +114,9 @@ function App() {
     useState("");
   const [updatingGroup, setUpdatingGroup] = useState(false);
   const token = localStorage.getItem("wooshToken");
+  const isOwner = (loggedInUser || "").toLowerCase() === "waff";
+  const [nicknameDraft, setNicknameDraft] = useState("");
+  const [savingNickname, setSavingNickname] = useState(false);
 
   // ============================================================
   // API HELPER
@@ -657,6 +660,7 @@ const leaveGroup = async () => {
 
   const openConversation = async (conversation) => {
     try {
+      setNicknameDraft(conversation.otherUser?.nickname || "");
       setActiveConversation(conversation);
       setLoadingMessages(true);
       setMessages([]);
@@ -713,6 +717,7 @@ const leaveGroup = async () => {
 
       await loadConversations();
 
+      setNicknameDraft(conversation.otherUser?.nickname || "");
       setActiveConversation(conversation);
 
       const messagesData = await apiFetch(
@@ -774,6 +779,18 @@ const leaveGroup = async () => {
     } finally {
       setSendingMessage(false);
     }
+  };
+
+  const saveDmNickname = async () => {
+    if (!activeConversation || !token) return;
+    try {
+      setSavingNickname(true);
+      const data = await apiFetch(`/api/dms/${activeConversation.id}/nickname`, { method: "PATCH", body: JSON.stringify({ nickname: nicknameDraft.trim() }) });
+      const nickname = data.nickname || "";
+      setActiveConversation((current) => current ? { ...current, otherUser: { ...(current.otherUser || {}), nickname } } : current);
+      setConversations((current) => current.map((item) => item.id === activeConversation.id ? { ...item, otherUser: { ...(item.otherUser || {}), nickname } } : item));
+    } catch (error) { alert(error.message || "Could not save nickname."); }
+    finally { setSavingNickname(false); }
   };
 
   // ============================================================
@@ -1203,7 +1220,7 @@ const leaveGroup = async () => {
     if (!window.confirm("Delete this Woosh? This cannot be undone.")) return;
 
     try {
-      await apiFetch(`/api/wooshes/${woosh.id}`, { method: "DELETE" });
+      await apiFetch(isOwner && woosh.username?.toLowerCase() !== loggedInUser.toLowerCase() ? `/api/admin/wooshes/${woosh.id}` : `/api/wooshes/${woosh.id}`, { method: "DELETE" });
       setWooshes((current) => current.filter((item) => item.id !== woosh.id));
       if (currentProfile) await loadProfile(currentProfile.username);
     } catch (error) {
@@ -1367,6 +1384,9 @@ const leaveGroup = async () => {
     );
   };
 
+  const ownerBadge = (username) =>
+    (username || "").toLowerCase() === "waff" ? <span className="owner-badge">Owner</span> : null;
+
   // ============================================================
   // RENDER WOOSH
   // ============================================================
@@ -1413,7 +1433,7 @@ const leaveGroup = async () => {
             {renderAvatar(profile, "woosh-avatar")}
 
             <span className="woosh-username">
-              @{profile.username}
+              @{profile.username} {ownerBadge(profile.username)}
             </span>
           </button>
         </div>
@@ -1467,10 +1487,9 @@ const leaveGroup = async () => {
               woosh.rewooshes.length}
           </button>
 
-          {loggedInUser &&
-            woosh.username?.toLowerCase() === loggedInUser.toLowerCase() && (
+          {loggedInUser && (isOwner || woosh.username?.toLowerCase() === loggedInUser.toLowerCase()) && (
               <button className="delete-post-button" onClick={() => deleteWoosh(woosh)}>
-                Delete
+                {isOwner && woosh.username?.toLowerCase() !== loggedInUser.toLowerCase() ? "Owner delete" : "Delete"}
               </button>
             )}
         </div>
@@ -1701,7 +1720,7 @@ const leaveGroup = async () => {
                   <div>
                     {!isMine && (
                       <div className="group-message-sender">
-                        @{message.username}
+                        @{message.username} {ownerBadge(message.username)}
                       </div>
                     )}
 
@@ -1902,7 +1921,7 @@ color: "#111111",
 
                             <div>
                               <strong>
-                                @{member.username}
+                                @{member.username} {ownerBadge(member.username)}
                               </strong>
 
                               {memberIsOwner && (
@@ -1997,12 +2016,18 @@ color: "#111111",
 
             <div>
               <strong>
-                @{otherUser.username}
+                {otherUser.nickname || `@${otherUser.username}`} {ownerBadge(otherUser.username)}
               </strong>
+              {otherUser.nickname && <small className="dm-real-username">@{otherUser.username}</small>}
             </div>
           </button>
         </div>
 
+        <form className="dm-nickname-editor" onSubmit={(event) => { event.preventDefault(); saveDmNickname(); }}>
+          <input aria-label="Nickname for this DM" value={nicknameDraft} onChange={(event) => setNicknameDraft(event.target.value)} maxLength={40} placeholder="Set a nickname (only you see it)" />
+          <button type="submit" disabled={savingNickname}>{savingNickname ? "Saving..." : "Save nickname"}</button>
+          {activeConversation.otherUser?.nickname && <button type="button" onClick={() => { setNicknameDraft(""); apiFetch(`/api/dms/${activeConversation.id}/nickname`, { method: "PATCH", body: JSON.stringify({ nickname: "" }) }).then(() => { setActiveConversation((current) => current ? { ...current, otherUser: { ...(current.otherUser || {}), nickname: "" } } : current); setConversations((current) => current.map((item) => item.id === activeConversation.id ? { ...item, otherUser: { ...(item.otherUser || {}), nickname: "" } } : item)); }).catch((error) => alert(error.message)); }}>Reset</button>}
+        </form>
         <div className="dm-messages">
           {loadingMessages ? (
             <div className="dm-empty">
@@ -2196,9 +2221,8 @@ color: "#111111",
 
                   <div className="dm-conversation-info">
                     <div className="dm-conversation-name">
-                      <strong>
-                        @{otherUser.username}
-                      </strong>
+                      <strong>{otherUser.nickname || `@${otherUser.username}`} {ownerBadge(otherUser.username)}</strong>
+                      {otherUser.nickname && <small className="dm-real-username">@{otherUser.username}</small>}
                     </div>
 
                     {lastMessage && (
@@ -2446,8 +2470,13 @@ color: "#111111",
             </h1>
 
             <div className="profile-username">
-              @{currentProfile.username}
+              @{currentProfile.username} {ownerBadge(currentProfile.username)}
             </div>
+            {isOwner && !isOwnProfile && <button className="owner-danger-button" onClick={async () => {
+              if (!window.confirm(`Permanently delete @${currentProfile.username} and their content? This cannot be undone.`)) return;
+              try { await apiFetch(`/api/admin/users/${currentProfile.id}`, { method: "DELETE" }); setWooshes((items) => items.filter((item) => item.username?.toLowerCase() !== currentProfile.username.toLowerCase())); setWooshies((items) => items.filter((item) => item.username?.toLowerCase() !== currentProfile.username.toLowerCase())); closeProfile(); alert("Account deleted."); }
+              catch (error) { alert(error.message || "Could not delete account."); }
+            }}>Delete account (Owner)</button>}
 
             {currentProfile.bio && (
               <p className="profile-bio">
@@ -2639,7 +2668,7 @@ color: "#111111",
                     )}
 
                     <span className="woosh-username">
-                      @{currentProfile.username}
+                      @{currentProfile.username} {ownerBadge(currentProfile.username)}
                     </span>
                   </button>
                 </div>
@@ -2733,7 +2762,7 @@ color: "#111111",
         if (!loggedInUser || !token) { setAuthPage("login"); return; }
         if (!window.confirm("Delete this Wooshie? This cannot be undone.")) return;
         try {
-          await apiFetch(`/api/wooshies/${wooshie.id}`, { method: "DELETE" });
+          await apiFetch(isOwner && wooshie.username?.toLowerCase() !== loggedInUser.toLowerCase() ? `/api/admin/wooshies/${wooshie.id}` : `/api/wooshies/${wooshie.id}`, { method: "DELETE" });
           setWooshies((current) => current.filter((item) => item.id !== wooshie.id));
         } catch (error) {
           setWooshieError(error.message || "Could not delete Wooshie.");
@@ -2798,12 +2827,12 @@ color: "#111111",
           {wooshieError && !showWooshieComposer && <p className="wooshie-error" role="alert">{wooshieError}</p>}
           <div className="wooshie-feed">{loadingWooshies ? <div className="page-placeholder"><h2>Loading Wooshies...</h2></div> : wooshies.length === 0 ? <div className="page-placeholder"><h2>No Wooshies yet</h2><p>Be the first to share a short video.</p></div> : wooshies.map((wooshie) => (
             <article className="wooshie-card" key={wooshie.id}>
-              <div className="wooshie-meta"><button className="wooshie-author" onClick={() => openProfile(wooshie.username)}>{renderAvatar({ username: wooshie.username, displayName: wooshie.displayName, profilePicture: wooshie.profilePicture || wooshie.profile_picture }, "wooshie-avatar")}<span><strong>{wooshie.displayName || wooshie.username}</strong><small>@{wooshie.username}</small></span></button><time>{wooshie.createdAt ? new Date(wooshie.createdAt.replace(" ", "T") + "Z").toLocaleDateString() : ""}</time></div>
+              <div className="wooshie-meta"><button className="wooshie-author" onClick={() => openProfile(wooshie.username)}>{renderAvatar({ username: wooshie.username, displayName: wooshie.displayName, profilePicture: wooshie.profilePicture || wooshie.profile_picture }, "wooshie-avatar")}<span><strong>{wooshie.displayName || wooshie.username} {ownerBadge(wooshie.username)}</strong><small>@{wooshie.username}</small></span></button><time>{wooshie.createdAt ? new Date(wooshie.createdAt.replace(" ", "T") + "Z").toLocaleDateString() : ""}</time></div>
               <div className="wooshie-video-frame"><video controls playsInline preload="metadata" src={`${API_URL}${wooshie.videoUrl}`} onPlay={() => recordWooshieView(wooshie)}>Your browser does not support HTML video.</video></div>
               {wooshie.caption && <p className="wooshie-caption">{wooshie.caption}</p>}
-              <div className="wooshie-actions"><button className={wooshie.likedByMe ? "liked" : ""} onClick={() => toggleWooshieLike(wooshie)}>{wooshie.likedByMe ? "Liked" : "Like"} · {wooshie.likeCount || 0}</button><button onClick={() => setWooshieCommentsOpen((current) => ({ ...current, [wooshie.id]: !wooshieCommentsOpen[wooshie.id] }))}>Comments · {wooshie.commentCount || (wooshie.comments || []).length || 0}</button>{loggedInUser && wooshie.username?.toLowerCase() === loggedInUser.toLowerCase() && <button className="delete-post-button" onClick={() => deleteWooshie(wooshie)}>Delete</button>}<span className="wooshie-view-count">{wooshie.viewCount || 0} views</span></div>
+              <div className="wooshie-actions"><button className={wooshie.likedByMe ? "liked" : ""} onClick={() => toggleWooshieLike(wooshie)}>{wooshie.likedByMe ? "Liked" : "Like"} · {wooshie.likeCount || 0}</button><button onClick={() => setWooshieCommentsOpen((current) => ({ ...current, [wooshie.id]: !wooshieCommentsOpen[wooshie.id] }))}>Comments · {wooshie.commentCount || (wooshie.comments || []).length || 0}</button>{loggedInUser && (isOwner || wooshie.username?.toLowerCase() === loggedInUser.toLowerCase()) && <button className="delete-post-button" onClick={() => deleteWooshie(wooshie)}>{isOwner && wooshie.username?.toLowerCase() !== loggedInUser.toLowerCase() ? "Owner delete" : "Delete"}</button>}<span className="wooshie-view-count">{wooshie.viewCount || 0} views</span></div>
               {wooshieCommentsOpen[wooshie.id] && <div className="wooshie-comments">
-                {(wooshie.comments || []).map((comment) => <div className="wooshie-comment" key={comment.id}><strong>@{comment.username}</strong><span>{comment.text}</span></div>)}
+                {(wooshie.comments || []).map((comment) => <div className="wooshie-comment" key={comment.id}><strong>@{comment.username} {ownerBadge(comment.username)}</strong><span>{comment.text}</span></div>)}
                 {!(wooshie.comments || []).length && <p className="wooshie-help">No comments yet. Start the conversation.</p>}
                 <form className="wooshie-comment-form" onSubmit={(event) => submitWooshieComment(event, wooshie)}><input value={wooshieCommentInputs[wooshie.id] || ""} onChange={(event) => setWooshieCommentInputs((current) => ({ ...current, [wooshie.id]: event.target.value }))} placeholder="Add a comment..." maxLength={1000} required /><button className="post-button" type="submit">Comment</button></form>
               </div>}
