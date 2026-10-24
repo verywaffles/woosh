@@ -106,6 +106,7 @@ export default function ProfileStatuses({
 
   const postWind = async (event) => {
     event.preventDefault();
+    const fileInput = event.currentTarget.querySelector('input[type="file"]');
     if (!windFile) {
       setStatusError("Choose a video that is 7 seconds or shorter.");
       return;
@@ -117,8 +118,7 @@ export default function ProfileStatuses({
       form.append("video", windFile);
       await apiFetch("/api/winds", { method: "POST", body: form });
       setWindFile(null);
-      const input = event.currentTarget.querySelector('input[type="file"]');
-      if (input) input.value = "";
+      if (fileInput) fileInput.value = "";
       await loadStatuses();
     } catch (error) {
       setStatusError(error.message || "Could not post your Wind.");
