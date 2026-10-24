@@ -717,6 +717,7 @@ const leaveGroup = async () => {
 
       await loadConversations();
 
+      setNicknameDraft(conversation.otherUser?.nickname || "");
       setActiveConversation(conversation);
 
       const messagesData = await apiFetch(
@@ -1719,7 +1720,7 @@ const leaveGroup = async () => {
                   <div>
                     {!isMine && (
                       <div className="group-message-sender">
-                        @{message.username}
+                        @{message.username} {ownerBadge(message.username)}
                       </div>
                     )}
 
@@ -1920,7 +1921,7 @@ color: "#111111",
 
                             <div>
                               <strong>
-                                @{member.username}
+                                @{member.username} {ownerBadge(member.username)}
                               </strong>
 
                               {memberIsOwner && (
