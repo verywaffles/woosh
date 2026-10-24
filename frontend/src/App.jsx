@@ -1384,8 +1384,16 @@ const leaveGroup = async () => {
     );
   };
 
-  const ownerBadge = (username) =>
-    (username || "").toLowerCase() === "waff" ? <span className="owner-badge">Owner</span> : null;
+  const ownerBadge = (username) => {
+    const normalizedUsername = (username || "").toLowerCase();
+    if (normalizedUsername === "waff") {
+      return <span className="owner-badge">Owner</span>;
+    }
+    if (normalizedUsername === "xentityx404") {
+      return <span className="developer-badge">Developer</span>;
+    }
+    return null;
+  };
 
   // ============================================================
   // RENDER WOOSH
