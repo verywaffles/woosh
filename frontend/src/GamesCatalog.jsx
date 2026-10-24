@@ -3,6 +3,7 @@ import "./GamesCatalog.css";
 
 const games = [
   { id: "beans", name: "Someone Stole My Beans", type: "Arcade", detail: "The original Woosh arcade game." },
+  { id: "sublevel", name: "The Sub-Level 4 Incident", type: "Horror", detail: "Explore the lab, find three keycards, and escape." },
   { id: "2048", name: "2048", type: "Puzzle", detail: "Combine tiles, chase a high score." },
   { id: "memory", name: "Memory Match", type: "Puzzle", detail: "Train your memory in fewer moves." },
   { id: "tic", name: "Tic-Tac-Toe", type: "Classic", detail: "Challenge a friend or the computer." },
@@ -336,13 +337,109 @@ function SoccerGame() {
 
 export default function GamesCatalog() {
   const [selected, setSelected] = useState("beans");
+
   const game = games.find((item) => item.id === selected) || games[0];
-  return <section className="minigames-page arcade-catalog">
-    <div className="minigames-header"><div><p className="minigames-eyebrow">WOOSH ARCADE</p><h1>Games</h1><p className="minigames-description">A little competition. A lot more polish. Pick a game and jump in.</p></div><span className="arcade-live-label"><i /> 7 GAMES</span></div>
-    <div className="arcade-game-picker" aria-label="Choose a game">{games.map((item, index) => <button key={item.id} className={`arcade-game-option ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)} aria-pressed={selected === item.id}><span className="game-option-top"><span className="arcade-game-category">{item.type}</span><span className="game-option-number">{String(index + 1).padStart(2, "0")}</span></span><strong>{item.name}</strong><span>{item.detail}</span><span className="game-option-launch">{selected === item.id ? "NOW PLAYING" : "PLAY GAME"} <b>↗</b></span></button>)}</div>
-    <div className="minigames-game-shell arcade-stage"><div className="minigames-game-topbar"><span className="minigames-game-dot" aria-hidden="true" /><span className="game-stage-name">{game.name}</span><span className="game-stage-status">ARCADE MODE</span>{selected === "beans" && <a href="https://someone-stole-my-beans.web.app/" target="_blank" rel="noopener noreferrer">Open separately ↗</a>}</div>
-      {selected === "beans" ? <iframe className="minigames-iframe" src="https://someone-stole-my-beans.web.app/" title="Someone Stole My Beans game" loading="lazy" allow="fullscreen; gamepad" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : <div className="arcade-play-area">{selected === "2048" ? <Puzzle2048 /> : selected === "memory" ? <MemoryMatch /> : selected === "tic" ? <TicTacToe /> : selected === "racing" ? <RacingGame /> : selected === "basketball" ? <BasketballGame /> : <SoccerGame />}</div>}
-    </div>
-    <p className="minigames-note">Progress and scores stay local to this browser for now. Use the arrow keys in 2048 and Turbo Racing. More skill, less random clicking.</p>
-  </section>;
+  const standaloneUrl =
+    selected === "beans"
+      ? "https://someone-stole-my-beans.web.app/"
+      : "/games/sub-level-4.html";
+
+  return (
+    <section className="minigames-page arcade-catalog">
+      <div className="minigames-header">
+        <div>
+          <p className="minigames-eyebrow">WOOSH ARCADE</p>
+          <h1>Games</h1>
+          <p className="minigames-description">
+            A little competition. A lot more polish. Pick a game and jump in.
+          </p>
+        </div>
+        <span className="arcade-live-label">
+          <i /> {games.length} GAMES
+        </span>
+      </div>
+
+      <div className="arcade-game-picker" aria-label="Choose a game">
+        {games.map((item, index) => (
+          <button
+            key={item.id}
+            className={`arcade-game-option ${selected === item.id ? "selected" : ""}`}
+            onClick={() => setSelected(item.id)}
+            aria-pressed={selected === item.id}
+          >
+            <span className="game-option-top">
+              <span className="arcade-game-category">{item.type}</span>
+              <span className="game-option-number">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            </span>
+            <strong>{item.name}</strong>
+            <span>{item.detail}</span>
+            <span className="game-option-launch">
+              {selected === item.id ? "NOW PLAYING" : "PLAY GAME"} <b>↗</b>
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div className="minigames-game-shell arcade-stage">
+        <div className="minigames-game-topbar">
+          <span className="minigames-game-dot" aria-hidden="true" />
+          <span className="game-stage-name">{game.name}</span>
+          <span className="game-stage-status">ARCADE MODE</span>
+          {(selected === "beans" || selected === "sublevel") && (
+            <a
+              href={standaloneUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open separately ↗
+            </a>
+          )}
+        </div>
+
+        {selected === "beans" ? (
+          <iframe
+            className="minigames-iframe"
+            src="https://someone-stole-my-beans.web.app/"
+            title="Someone Stole My Beans game"
+            loading="lazy"
+            allow="fullscreen; gamepad"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        ) : selected === "sublevel" ? (
+          <iframe
+            className="minigames-iframe sublevel-game-iframe"
+            src="/games/sub-level-4.html"
+            title="The Sub-Level 4 Incident horror adventure"
+            loading="lazy"
+            allow="fullscreen"
+            allowFullScreen
+          />
+        ) : (
+          <div className="arcade-play-area">
+            {selected === "2048" ? (
+              <Puzzle2048 />
+            ) : selected === "memory" ? (
+              <MemoryMatch />
+            ) : selected === "tic" ? (
+              <TicTacToe />
+            ) : selected === "racing" ? (
+              <RacingGame />
+            ) : selected === "basketball" ? (
+              <BasketballGame />
+            ) : (
+              <SoccerGame />
+            )}
+          </div>
+        )}
+      </div>
+
+      <p className="minigames-note">
+        Progress and scores stay local to this browser for now. Use the arrow
+        keys in 2048 and Turbo Racing. More skill, less random clicking.
+      </p>
+    </section>
+  );
 }
