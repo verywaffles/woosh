@@ -114,7 +114,7 @@ function App() {
     useState("");
   const [updatingGroup, setUpdatingGroup] = useState(false);
   const token = localStorage.getItem("wooshToken");
-  const isOwner = (loggedInUser || "").toLowerCase() === "verywaffles";
+  const isOwner = (loggedInUser || "").toLowerCase() === "waff";
   const [nicknameDraft, setNicknameDraft] = useState("");
   const [savingNickname, setSavingNickname] = useState(false);
 
@@ -1385,7 +1385,7 @@ const leaveGroup = async () => {
   };
 
   const ownerBadge = (username) =>
-    (username || "").toLowerCase() === "verywaffles" ? <span className="owner-badge">Owner</span> : null;
+    (username || "").toLowerCase() === "waff" ? <span className="owner-badge">Owner</span> : null;
 
   // ============================================================
   // RENDER WOOSH
